@@ -15,8 +15,8 @@ class _MainNavPageState extends State<MainNavPage> {
   final List<Widget> _screens = [
     HomePage(),
     Buddy(),
-    Progress(),
-    Profile(),
+    // Progress(),
+    // Profile(),
   ];
 
   @override
