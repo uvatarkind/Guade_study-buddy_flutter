@@ -21,7 +21,7 @@ class BuddyDetailScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => Requestsent()));
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RequestSentScreen()));
               },
               child: Text("Join"),
             ),
