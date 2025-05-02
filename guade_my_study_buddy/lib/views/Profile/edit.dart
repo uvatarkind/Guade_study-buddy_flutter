@@ -28,19 +28,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar:BottomNavigationBar(
-        currentIndex: 3, 
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.black54,
-        type: BottomNavigationBarType.fixed,
-        items: const [ 
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.group_outlined), label: 'Buddies'),
-          BottomNavigationBarItem(icon: Icon(Icons.hourglass_empty_outlined), label: 'Progress'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outlined), label: 'Profile'),
-        ],
-        
-      ),
       body: Column(
         children: [
           Stack(
