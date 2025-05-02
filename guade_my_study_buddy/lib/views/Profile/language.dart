@@ -92,7 +92,7 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
                         _selectedLanguage = value;
                       });
                     },
-                    activeColor: Colors.purple,
+                    activeColor: const Color.fromARGB(255, 119, 5, 139),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),

@@ -127,7 +127,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(title, style: TextStyle(fontSize: 14)),
-      activeColor: Colors.purple,
+      activeColor: const Color.fromARGB(255, 119, 5, 139),
       value: toggles[title] ?? false,
       onChanged: (value) => _updateToggle(title, value),
     );

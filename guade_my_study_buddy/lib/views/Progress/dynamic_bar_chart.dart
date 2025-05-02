@@ -52,7 +52,7 @@ class DynamicBarChart extends StatelessWidget {
       barRods: [
         BarChartRodData(
           toY: data.timeSpent,
-          color:  Colors.purpleAccent, // Customize bar color
+          color:  const Color.fromARGB(255, 119, 5, 139), // Customize bar color
           width: 16, // Customize bar width
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(4),

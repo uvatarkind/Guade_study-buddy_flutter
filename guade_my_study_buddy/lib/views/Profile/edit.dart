@@ -157,7 +157,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   SizedBox(height: 30), // Increased spacing before the button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFB347E4),
+                      backgroundColor: const Color.fromARGB(255, 119, 5, 139),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
