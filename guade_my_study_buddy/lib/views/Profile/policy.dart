@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PrivacyPolicyApp extends StatelessWidget {
+  const PrivacyPolicyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,6 +13,8 @@ class PrivacyPolicyApp extends StatelessWidget {
 }
 
 class PrivacyPolicyScreen extends StatelessWidget {
+  const PrivacyPolicyScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -7,15 +7,20 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF9C27B0),
+      backgroundColor: Color.fromARGB(255, 119, 5, 139),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: Center(
-                child: Image.asset(
-                  'assets/puzzle_people.png', // Replace with your asset path
-                  width: 250,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      'assets/images/welcome.png', // Replace with your asset path
+                      width: 250,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -44,7 +49,8 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushNamed(context, '/signup1');
                     },
-                    child: Text("Create an account"),
+                    child: Text("Create an account",
+                        style: TextStyle(color: Colors.purple)),
                   ),
                   SizedBox(height: 10),
                   OutlinedButton(

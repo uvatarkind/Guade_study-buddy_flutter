@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 class EditProfileApp extends StatelessWidget {
+  const EditProfileApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,7 +13,9 @@ class EditProfileApp extends StatelessWidget {
   }
 }
 
-class EditProfilePage extends StatefulWidget { 
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
+ 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }

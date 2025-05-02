@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
-import 'package:guade_my_study_buddy/providers/user_provider.dart';
-import 'package:guade_my_study_buddy/views/Auth/login.dart';
-import 'package:guade_my_study_buddy/views/Auth/privacy_notice.dart';
-import 'package:guade_my_study_buddy/views/Auth/signup_step2.dart';
-import 'package:guade_my_study_buddy/views/Auth/welcome.dart';
 import 'package:provider/provider.dart';
-import 'views/Auth/signup_step1.dart'; // <-- if you saved it as signup_step1.dart
-// import 'views/Auth/signup_step2.dart'; // for the next steps
+
+import './providers/user_provider.dart';
+import './views/Auth/login.dart';
+import './views/Auth/privacy_notice.dart';
+import './views/Auth/signup_step2.dart';
+import './views/Auth/welcome.dart';
+import 'views/Auth/signup_step1.dart'; 
 
 import 'package:guade_my_study_buddy/views/bottomNav.dart';
 

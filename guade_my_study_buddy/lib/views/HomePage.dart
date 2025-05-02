@@ -15,6 +15,10 @@ class HomePage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           children: [
+            _buildHeader(context),
+
+            const SizedBox(height: 20),
+
             // Greeting section
             _buildGreetingSection(textTheme),
 
@@ -45,6 +49,46 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+  Widget _buildHeader(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      // Logo
+      Image.asset(
+        'assets/images/logo.jpg',
+        height: 40,
+      ),
+
+      // Notification icon
+      IconButton(
+        icon: const Icon(Icons.notifications_none),
+        onPressed: () {
+          // Show notification modal
+          showModalBottomSheet(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) => Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                    'Your Work',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 12),
+                  Text('You have no new notifications.'),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    ],
+  );
+}
 
   Widget _buildGreetingSection(TextTheme textTheme) {
     return Text(
@@ -57,42 +101,49 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildUpcomingSessionCard(Color primaryColor) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: primaryColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Expanded(
-            child: Text(
-              'Upcoming session in an hour',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: primaryColor,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: primaryColor.withOpacity(0.3),
+          blurRadius: 8,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Row(
+      children: [
+        Image.asset(
+          'assets/images/clock.jpg',
+          height: 40,
+          width: 40,
+          fit: BoxFit.cover,
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Text(
+            'Upcoming session in an hour',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.arrow_forward, color: Colors.white),
-            onPressed: () {
-              // Navigate to session details
-              debugPrint('Navigate to session details');
-            },
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        IconButton(
+          icon: const Icon(Icons.arrow_forward, color: Colors.white),
+          onPressed: () {
+            debugPrint('Navigate to session details');
+          },
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildSectionHeader({
     required String title,

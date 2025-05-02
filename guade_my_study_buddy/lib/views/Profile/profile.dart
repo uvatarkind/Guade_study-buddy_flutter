@@ -13,6 +13,8 @@ void main() {
 }
 
 class ProfileApp extends StatelessWidget {
+  const ProfileApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +24,9 @@ class ProfileApp extends StatelessWidget {
   }
 }
 
-class ProfileScreen extends StatefulWidget { // Make it StatefulWidget
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+ // Make it StatefulWidget
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -45,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _profileImagePath = pickedFile.path;
       });
-      print('Image selected: ${_profileImagePath}');
+      print('Image selected: $_profileImagePath');
       // You might want to save this path somewhere persistent
       // (e.g., using shared_preferences) so it loads next time.
     } else {
@@ -81,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             radius: 45,
                             backgroundImage: _profileImagePath != null
                                 ? FileImage(File(_profileImagePath!)) as ImageProvider<Object>?
-                                : AssetImage("assets/avatar.png") as ImageProvider<Object>?, // Use _profileImagePath
+                                : AssetImage("assets/images/profile.jpg") as ImageProvider<Object>?, // Use _profileImagePath
                           ),
                         ),
                         Positioned(
@@ -131,6 +135,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
 class ProfileSection extends StatefulWidget {
+  const ProfileSection({super.key});
+
   @override
   _ProfileSectionState createState() => _ProfileSectionState();
 }

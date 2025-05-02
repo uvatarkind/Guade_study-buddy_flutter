@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'HomePage.dart';
-import 'Buddies/AllBuddies.dart';
+import './Buddies/AllBuddies.dart';
 import 'Profile/profile.dart';
 import 'Progress/progress.dart';
 
 class MainNavPage extends StatefulWidget {
+  const MainNavPage({super.key});
+
   @override
   _MainNavPageState createState() => _MainNavPageState();
 }
@@ -14,7 +16,7 @@ class _MainNavPageState extends State<MainNavPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    Buddy()
+    AllBuddiesScreen(),
     Progress(),
     ProfileApp(),
   ];
@@ -39,7 +41,7 @@ class _MainNavPageState extends State<MainNavPage> {
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Buddies'),
-        BottomNavigationBarItem(icon: Icon(Icons.dashboard_customize_rounded), label: 'Progress'),
+        BottomNavigationBarItem(icon: Icon(Icons.lock_clock), label: 'Progress'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
     ),

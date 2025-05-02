@@ -6,12 +6,12 @@ class Buddycard extends StatelessWidget {
   final String imagePath;
   final VoidCallback onTap;
   const Buddycard({
-    Key?key,
+    super.key,
     required this.name,
     required this.course,
     required this.imagePath,
     required this.onTap,
-  }):super(key: key);
+  });
 
  @override
   Widget build(BuildContext context) {
