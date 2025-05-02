@@ -16,7 +16,7 @@ class _MainNavPageState extends State<MainNavPage> {
     HomePage(),
     Buddy(),
     Progress(),
-    Profile(),
+    ProfileApp(),
   ];
 
   @override
