@@ -57,22 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 3,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.black54,
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.group_outlined), label: "Buddies"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.hourglass_empty_outlined), label: "Progress"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outlined), label: "Profile"),
-        ],
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

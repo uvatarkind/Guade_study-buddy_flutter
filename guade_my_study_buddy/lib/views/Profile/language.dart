@@ -183,30 +183,6 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.group_outlined),
-            label: 'Buddies',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.hourglass_empty_outlined),
-            label: 'Progress',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 3,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.grey,
-      ),
     );
   }
 }
