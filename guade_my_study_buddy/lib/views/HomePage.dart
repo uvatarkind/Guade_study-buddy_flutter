@@ -35,6 +35,10 @@ class _HomePageState extends State<HomePage> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           children: [
+            _buildHeader(context),
+
+            const SizedBox(height: 20),
+
             // Greeting section
             _buildGreetingSection(textTheme),
 
@@ -65,6 +69,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Logo
+        Image.asset(
+          'assets/images/logo.jpg',
+          height: 50,
+        ),
+
+        // Notification icon
+        IconButton(
+          icon: const Icon(Icons.notifications_none),
+          onPressed: () {
+            // Show notification modal
+            showModalBottomSheet(
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              builder: (context) => Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Text(
+                      'Your Work',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 12),
+                    Text('You have no new notifications.'),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildGreetingSection(TextTheme textTheme) {
     return Text(
       'Good day $_username!', // ✅ Display the retrieved username
@@ -91,6 +137,13 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         children: [
+          Image.asset(
+            'assets/images/clock.png',
+            height: 40,
+            width: 40,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(width: 12),
           const Expanded(
             child: Text(
               'Upcoming session in an hour',
@@ -147,17 +200,17 @@ class _HomePageState extends State<HomePage> {
       {
         'name': 'SUPER NOVA',
         'course': 'Maths, Physics, Astronomy',
-        'imagePath': 'assets/images/study1.jpg',
+        'imagePath': 'assets/images/buddy1.jpg',
       },
       {
         'name': 'MATH WIZARD',
         'course': 'Calculus, Algebra, Statistics',
-        'imagePath': 'assets/images/study2.jpg',
+        'imagePath': 'assets/images/buddy2.jpg',
       },
       {
         'name': 'CODE MASTER',
         'course': 'Programming, Algorithms, Data Structures',
-        'imagePath': 'assets/images/study3.jpg',
+        'imagePath': 'assets/images/buddy3.jpg',
       },
     ];
 

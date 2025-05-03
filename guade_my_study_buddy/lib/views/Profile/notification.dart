@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
+
   @override
   _NotificationsScreenState createState() => _NotificationsScreenState();
 }
@@ -49,18 +51,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 3,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.black54,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.group), label: "Buddies"),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Progress"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
-      ),
       body: Stack(
         children: [
           // Curved Background
@@ -137,7 +127,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(title, style: TextStyle(fontSize: 14)),
-      activeColor: Colors.purple,
+      activeColor: const Color.fromARGB(255, 119, 5, 139),
       value: toggles[title] ?? false,
       onChanged: (value) => _updateToggle(title, value),
     );
