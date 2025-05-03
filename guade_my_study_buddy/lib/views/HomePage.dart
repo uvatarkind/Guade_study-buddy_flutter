@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'ReusableWiget/buddyCard.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String _username = "User"; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername(); // ✅ Load username when home page starts
+  }
+
+  Future<void> _loadUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _username = prefs.getString('username') ?? "User";
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Extract theme colors for consistency
     final primaryColor = Theme.of(context).primaryColor;
     final textTheme = Theme.of(context).textTheme;
 
@@ -29,7 +49,6 @@ class HomePage extends StatelessWidget {
             _buildSectionHeader(
               title: 'Popular Buddies',
               onSeeMoreTap: () {
-                // Navigate to see more buddies
                 debugPrint('Navigate to see all buddies');
               },
               textTheme: textTheme,
@@ -48,7 +67,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildGreetingSection(TextTheme textTheme) {
     return Text(
-      'Good day Hanna',
+      'Good day $_username!', // ✅ Display the retrieved username
       style: textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.bold,
         fontSize: 20,
@@ -85,7 +104,6 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.arrow_forward, color: Colors.white),
             onPressed: () {
-              // Navigate to session details
               debugPrint('Navigate to session details');
             },
           ),
@@ -125,7 +143,6 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBuddiesListView() {
-    // Sample buddy data - in a real app, this would come from a data source
     final buddies = [
       {
         'name': 'SUPER NOVA',
@@ -157,7 +174,6 @@ class HomePage extends StatelessWidget {
             course: buddy['course'] ?? '',
             imagePath: buddy['imagePath'] ?? '',
             onTap: () {
-              // Navigate to buddy detail
               debugPrint('Navigate to ${buddy['name']} details');
             },
           );
