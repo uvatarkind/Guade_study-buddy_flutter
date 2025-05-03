@@ -26,11 +26,4 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/logo.jpg
-    - assets/images/clock.png
-    - assets/images/profile.jpg
-    - assets/images/welcome.png
-    - assets/images/buddy1.jpg
-    - assets/images/buddy2.jpg
-    - assets/images/buddy3.jpg
-    - assets/images/buddy4.jpg
+    - assets/images/

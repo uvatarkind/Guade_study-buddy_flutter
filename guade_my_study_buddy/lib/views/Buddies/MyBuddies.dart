@@ -61,13 +61,16 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
           child: Column(
             children: [
               Expanded(
-                  child: Image.asset('assets/group.jpg', fit: BoxFit.cover)),
+                  child: Image.asset('assets/images/buddy${index + 1}.jpg',
+                      fit: BoxFit.cover)),
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("SUPER NOVA",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.deepPurple)),
               ),
-              Text("Maths, Physics, Astronomy", style: TextStyle(fontSize: 12)),
+              Text("Maths, Physics, Astronomy",
+                  style: TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
         );
@@ -94,7 +97,10 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ElevatedButton(onPressed: () {}, child: Text("Accept")),
+            ElevatedButton(
+                onPressed: () {},
+                child: Text("Accept"),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green)),
             SizedBox(width: 8),
             ElevatedButton(
                 onPressed: () {},

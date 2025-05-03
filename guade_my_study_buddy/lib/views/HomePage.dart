@@ -49,46 +49,48 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-  Widget _buildHeader(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      // Logo
-      Image.asset(
-        'assets/images/logo.jpg',
-        height: 40,
-      ),
 
-      // Notification icon
-      IconButton(
-        icon: const Icon(Icons.notifications_none),
-        onPressed: () {
-          // Show notification modal
-          showModalBottomSheet(
-            context: context,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            builder: (context) => Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Text(
-                    'Your Work',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 12),
-                  Text('You have no new notifications.'),
-                ],
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Logo
+        Image.asset(
+          'assets/images/logo.jpg',
+          height: 50,
+        ),
+
+        // Notification icon
+        IconButton(
+          icon: const Icon(Icons.notifications_none),
+          onPressed: () {
+            // Show notification modal
+            showModalBottomSheet(
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-            ),
-          );
-        },
-      ),
-    ],
-  );
-}
+              builder: (context) => Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Text(
+                      'Your Work',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 12),
+                    Text('You have no new notifications.'),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
 
   Widget _buildGreetingSection(TextTheme textTheme) {
     return Text(
@@ -101,49 +103,48 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildUpcomingSessionCard(Color primaryColor) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: primaryColor,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: primaryColor.withOpacity(0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 3),
-        ),
-      ],
-    ),
-    child: Row(
-      children: [
-        Image.asset(
-          'assets/images/clock.jpg',
-          height: 40,
-          width: 40,
-          fit: BoxFit.cover,
-        ),
-        const SizedBox(width: 12),
-        const Expanded(
-          child: Text(
-            'Upcoming session in an hour',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: primaryColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            'assets/images/clock.png',
+            height: 40,
+            width: 40,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Upcoming session in an hour',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.arrow_forward, color: Colors.white),
-          onPressed: () {
-            debugPrint('Navigate to session details');
-          },
-        ),
-      ],
-    ),
-  );
-}
-
+          IconButton(
+            icon: const Icon(Icons.arrow_forward, color: Colors.white),
+            onPressed: () {
+              debugPrint('Navigate to session details');
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildSectionHeader({
     required String title,
@@ -181,17 +182,17 @@ class HomePage extends StatelessWidget {
       {
         'name': 'SUPER NOVA',
         'course': 'Maths, Physics, Astronomy',
-        'imagePath': 'assets/images/study1.jpg',
+        'imagePath': 'assets/images/buddy1.jpg',
       },
       {
         'name': 'MATH WIZARD',
         'course': 'Calculus, Algebra, Statistics',
-        'imagePath': 'assets/images/study2.jpg',
+        'imagePath': 'assets/images/buddy2.jpg',
       },
       {
         'name': 'CODE MASTER',
         'course': 'Programming, Algorithms, Data Structures',
-        'imagePath': 'assets/images/study3.jpg',
+        'imagePath': 'assets/images/buddy3.jpg',
       },
     ];
 

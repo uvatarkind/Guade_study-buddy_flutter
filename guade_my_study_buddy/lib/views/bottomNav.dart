@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'HomePage.dart';
-import './Buddies/AllBuddies.dart';
+import './Buddies/Buddy.dart';
 import 'Profile/profile.dart';
 import 'Progress/progress.dart';
 
@@ -16,7 +16,7 @@ class _MainNavPageState extends State<MainNavPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    AllBuddiesScreen(),
+    BuddiesPage(),
     Progress(),
     ProfileApp(),
   ];
@@ -26,8 +26,8 @@ class _MainNavPageState extends State<MainNavPage> {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-      currentIndex: _currentIndex,
-      onTap: (index) {
+        currentIndex: _currentIndex,
+        onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
@@ -35,16 +35,15 @@ class _MainNavPageState extends State<MainNavPage> {
         selectedItemColor: Colors.purple,
         unselectedItemColor: Colors.black,
         backgroundColor: Colors.white,
-
         type: BottomNavigationBarType.fixed,
-
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Buddies'),
-        BottomNavigationBarItem(icon: Icon(Icons.lock_clock), label: 'Progress'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-      ],
-    ),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Buddies'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.lock_clock), label: 'Progress'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
     );
   }
 }
