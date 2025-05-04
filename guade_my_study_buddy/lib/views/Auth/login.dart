@@ -14,9 +14,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 119, 5, 139),
+      backgroundColor: Colors.deepPurple,
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 119, 5, 139),
+        backgroundColor: Colors.deepPurple,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),

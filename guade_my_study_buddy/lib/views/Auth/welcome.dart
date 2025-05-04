@@ -7,7 +7,7 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 119, 5, 139),
+      backgroundColor: Colors.deepPurple,
       body: SafeArea(
         child: Column(
           children: [
@@ -31,7 +31,7 @@ class WelcomePage extends StatelessWidget {
             Text(
               "Guade:Study buddy",
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 25,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -50,7 +50,7 @@ class WelcomePage extends StatelessWidget {
                       Navigator.pushNamed(context, '/signup1');
                     },
                     child: Text("Create an account",
-                        style: TextStyle(color: Colors.purple)),
+                        style: TextStyle(color: Colors.deepPurpleAccent)),
                   ),
                   SizedBox(height: 10),
                   OutlinedButton(

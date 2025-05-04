@@ -54,12 +54,13 @@ class HomePage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Logo
-        Image.asset(
-          'assets/images/logo.jpg',
-          height: 50,
+        // logo
+        CircleAvatar(
+          radius: 25,
+          backgroundImage: AssetImage(
+            'assets/images/logo.jpg',
+          ),
         ),
-
         // Notification icon
         IconButton(
           icon: const Icon(Icons.notifications_none),
@@ -106,7 +107,7 @@ class HomePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: primaryColor,
+        color: Colors.deepPurple,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(

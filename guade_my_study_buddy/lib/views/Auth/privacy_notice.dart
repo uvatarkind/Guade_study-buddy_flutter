@@ -6,9 +6,9 @@ class PrivacyNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 119, 5, 139),
+      backgroundColor: Colors.deepPurple,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 119, 5, 139),
+        backgroundColor: Colors.deepPurple,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -64,7 +64,7 @@ class PrivacyNotice extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: Colors.purple,
+                foregroundColor: Colors.deepPurple,
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
