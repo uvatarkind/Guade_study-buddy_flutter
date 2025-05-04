@@ -25,11 +25,22 @@ class UserModel {
     required this.token,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+  // 🔐 Use this only when registering
+  Map<String, dynamic> toRegistrationMap() {
+    return {
+      'name': name,
+      'username': username,
+      'email': email,
+      'password': password,
+    };
+  }
+
+  // 🧾 Full map for future (e.g. profile update)
+  Map<String, dynamic> toFullMap() {
+    return {
       'id': id,
       'name': name,
-      'Username': username,
+      'username': username,
       'email': email,
       'gender': gender,
       'password': password,
@@ -40,50 +51,23 @@ class UserModel {
     };
   }
 
-  // Add the copyWith method
-  UserModel copyWith({
-    String? id,
-    String? name,
-    String? username,
-    String? email,
-    String? gender,
-    String? password,
-    String? confirmPassword,
-    String? levelOfEducation,
-    String? major,
-    String? token,
-  }) {
-    return UserModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      username: username ?? this.username,
-      email: email ?? this.email,
-      gender: gender ?? this.gender,
-      password: password ?? this.password,
-      confirmPassword: confirmPassword ?? this.confirmPassword,
-      levelOfEducation: levelOfEducation ?? this.levelOfEducation,
-      major: major ?? this.major,
-      token: token ?? this.token,
-    );
-  }
-
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['_id'] as String,
-      name: map['name'] as String,
-      username: map['username'] as String,
-      email: map['email'] as String,
-      gender: map['gender'] as String,
-      password: map['password'] as String,
-      confirmPassword: map['confirmPassword'] as String,
-      levelOfEducation: map['levelOfEducation'] as String,
-      major: map['major'] as String,
-      token: map['token'] as String,
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      username: map['username'] ?? '',
+      email: map['email'] ?? '',
+      gender: map['gender'] ?? '',
+      password: '',
+      confirmPassword: '',
+      levelOfEducation: map['levelOfEducation'] ?? '',
+      major: map['major'] ?? '',
+      token: map['token'] ?? '',
     );
   }
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toFullMap());
 
   factory UserModel.fromJson(String source) =>
-      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+      UserModel.fromMap(json.decode(source));
 }

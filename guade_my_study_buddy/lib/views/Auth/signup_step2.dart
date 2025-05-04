@@ -23,12 +23,6 @@ class _SignUpStep2State extends State<SignUpStep2> {
 
   void _saveDataToProvider() {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.setUserFromModel(
-      userProvider.user.copyWith(
-        levelOfEducation: _educationController.text.trim(),
-        major: _majorController.text.trim(),
-      ),
-    );
   }
 
   @override
