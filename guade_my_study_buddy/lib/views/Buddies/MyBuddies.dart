@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'createBuddy.dart';
+import 'BuddyChatScreen.dart';
 
 class MyBuddiesScreen extends StatefulWidget {
   final String searchQuery;
@@ -21,33 +22,33 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(selectedStatus),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: selectedStatus,
-                      dropdownColor: _getStatusColor(selectedStatus),
-                      iconEnabledColor: Colors.white,
-                      style: TextStyle(color: Colors.white),
-                      items: ['Joined', 'Pending', 'Request'].map((status) {
-                        return DropdownMenuItem<String>(
-                          value: status,
-                          child: Text(status),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedStatus = value!;
-                        });
-                      },
-                    ),
+              Container(
+                width: 120,
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: _getStatusColor(selectedStatus),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedStatus,
+                    dropdownColor: _getStatusColor(selectedStatus),
+                    iconEnabledColor: Colors.white,
+                    style: TextStyle(color: Colors.white),
+                    isExpanded: true,
+                    items: ['Joined', 'Pending', 'Request'].map((status) {
+                      return DropdownMenuItem<String>(
+                        value: status,
+                        child: Text(status),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedStatus = value!;
+                      });
+                    },
                   ),
                 ),
               ),
@@ -62,19 +63,21 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
         if (selectedStatus == 'Joined' || selectedStatus == 'Pending')
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Createbuddy()),
-                );
-              },
-              icon: Icon(Icons.group_add),
-              label: Text("Create Buddy"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                foregroundColor: Colors.white,
-                minimumSize: Size(double.infinity, 48),
+            child: Center(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Createbuddy()),
+                  );
+                },
+                icon: Icon(Icons.group_add),
+                label: Text("Create Buddy"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
               ),
             ),
           ),
@@ -145,28 +148,41 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
       crossAxisSpacing: 4,
       padding: EdgeInsets.all(10),
       children: filtered.map((buddy) {
-        return Card(
-          shadowColor: Colors.purple,
-          elevation: 4,
-          child: Column(
-            children: [
-              Expanded(
-                child: Image.asset(buddy['image']!, fit: BoxFit.cover),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  buddy['name']!,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.deepPurple),
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BuddyChatScreen(
+                  buddyName: buddy['name']!,
+                  buddyImage: buddy['image']!,
                 ),
               ),
-              Text(
-                buddy['subjects']!,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              const SizedBox(height: 4),
-            ],
+            );
+          },
+          child: Card(
+            shadowColor: Colors.purple,
+            elevation: 4,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Image.asset(buddy['image']!, fit: BoxFit.cover),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    buddy['name']!,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                  ),
+                ),
+                Text(
+                  buddy['subjects']!,
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                const SizedBox(height: 4),
+              ],
+            ),
           ),
         );
       }).toList(),

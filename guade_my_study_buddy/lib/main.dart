@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:guade_my_study_buddy/providers/user_provider.dart';
 import 'package:guade_my_study_buddy/views/Auth/forgot_password.dart';
@@ -14,7 +15,10 @@ import 'views/Auth/signup_step1.dart'; // <-- if you saved it as signup_step1.da
 
 import 'package:guade_my_study_buddy/views/bottomNav.dart';
 
-void main() {
+void main() async {
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (_) => UserProvider(),

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TagInputWidget extends StatefulWidget {
-  const TagInputWidget({Key? key}) : super(key: key);
+  final Function(List<String>)? onTagsChanged;
+
+  const TagInputWidget({
+    Key? key,
+    this.onTagsChanged,
+  }) : super(key: key);
 
   @override
   _TagInputWidgetState createState() => _TagInputWidgetState();
@@ -25,6 +30,8 @@ class _TagInputWidgetState extends State<TagInputWidget> {
         setState(() {
           _tags.add(trimmedTag);
         });
+        // Notify parent widget about the change
+        widget.onTagsChanged?.call(_tags);
         // Clear the text field after adding the tag
         _tagController.clear();
       }
@@ -44,6 +51,8 @@ class _TagInputWidgetState extends State<TagInputWidget> {
     setState(() {
       _tags.remove(tag);
     });
+    // Notify parent widget about the change
+    widget.onTagsChanged?.call(_tags);
   }
 
   @override
@@ -72,7 +81,8 @@ class _TagInputWidgetState extends State<TagInputWidget> {
             ),
             filled: true,
             fillColor: Colors.purple[50],
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
           ),
           // Disable the text field if the maximum tag limit is reached
           enabled: _tags.length < _maxTags,
