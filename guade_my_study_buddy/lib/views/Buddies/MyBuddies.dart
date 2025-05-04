@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'createBuddy.dart';
 
 class MyBuddiesScreen extends StatefulWidget {
+  final String searchQuery;
+
+  MyBuddiesScreen({required this.searchQuery});
+
   @override
   _MyBuddiesScreenState createState() => _MyBuddiesScreenState();
 }
@@ -12,28 +17,69 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Dropdown
+        // Search + Dropdown
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: DropdownButton<String>(
-            value: selectedStatus,
-            items: ['Joined', 'Pending', 'Request'].map((status) {
-              return DropdownMenuItem<String>(
-                value: status,
-                child: Text(status),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedStatus = value!;
-              });
-            },
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  onChanged: (value) {},
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                flex: 1,
+                child: DropdownButton<String>(
+                  value: selectedStatus,
+                  items: ['Joined', 'Pending', 'Request'].map((status) {
+                    return DropdownMenuItem<String>(
+                      value: status,
+                      child: Text(status),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedStatus = value!;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
         ),
-        // Content
-        Expanded(
-          child: _buildContentBasedOnStatus(selectedStatus),
-        ),
+
+        // Status-based content
+        Expanded(child: _buildContentBasedOnStatus(selectedStatus)),
+
+        // Create Buddy button (only for Joined or Pending)
+        if (selectedStatus == 'Joined' || selectedStatus == 'Pending')
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Createbuddy()),
+                );
+              },
+              icon: Icon(Icons.group_add),
+              label: Text("Create Buddy"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+                minimumSize: Size(double.infinity, 48),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -52,29 +98,68 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   }
 
   Widget _buildGroupGrid() {
+    final List<Map<String, String>> buddies = [
+      {
+        "name": "SUPER NOVA",
+        "subjects": "Maths, Physics, Astronomy",
+        "image": "assets/images/buddy1.jpg"
+      },
+      {
+        "name": "NERD HERD",
+        "subjects": "Science, Biology, Chemistry",
+        "image": "assets/images/buddy2.jpg"
+      },
+      {
+        "name": "TECH CREW",
+        "subjects": "CS, AI, Programming",
+        "image": "assets/images/buddy3.jpg"
+      },
+      {
+        "name": "LOGIC LEGENDS",
+        "subjects": "Maths, Logic, Reasoning",
+        "image": "assets/images/buddy4.jpg"
+      },
+    ];
+
+    final filtered = buddies.where((buddy) {
+      final query = widget.searchQuery.toLowerCase();
+      return buddy['name']!.toLowerCase().contains(query) ||
+          buddy['subjects']!.toLowerCase().contains(query);
+    }).toList();
+
     return GridView.count(
       crossAxisCount: 2,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
       padding: EdgeInsets.all(10),
-      children: List.generate(4, (index) {
+      children: filtered.map((buddy) {
         return Card(
+          shadowColor: Colors.purple,
           elevation: 4,
           child: Column(
             children: [
               Expanded(
-                  child: Image.asset('assets/images/buddy${index + 1}.jpg',
-                      fit: BoxFit.cover)),
+                child: Image.asset(buddy['image']!, fit: BoxFit.cover),
+              ),
               Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Text("SUPER NOVA",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.deepPurple)),
+                child: Text(
+                  buddy['name']!,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                ),
               ),
-              Text("Maths, Physics, Astronomy",
-                  style: TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(
+                buddy['subjects']!,
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              const SizedBox(
+                height: 4,
+              )
             ],
           ),
         );
-      }),
+      }).toList(),
     );
   }
 

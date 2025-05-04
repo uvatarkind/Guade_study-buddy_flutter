@@ -28,9 +28,9 @@ class _SignUpStep2State extends State<SignUpStep2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 119, 5, 139),
+      backgroundColor: Colors.deepPurple,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 119, 5, 139),
+        backgroundColor: Colors.deepPurple,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),

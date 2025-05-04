@@ -2,7 +2,7 @@
 import 'dart:io'; // Import for File
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Import for image picker
+import 'package:image_picker/image_picker.dart';
 import 'edit.dart';
 import 'notification.dart';
 import 'language.dart';
@@ -26,18 +26,18 @@ class ProfileApp extends StatelessWidget {
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
- // Make it StatefulWidget
+  // Make it StatefulWidget
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController nameController =
-  TextEditingController(text: "Hanna Hanna");
+      TextEditingController(text: "Hanna Hanna");
   final TextEditingController emailController =
-  TextEditingController(text: "youremail@domain.com");
+      TextEditingController(text: "youremail@domain.com");
   final TextEditingController phoneController =
-  TextEditingController(text: "+01 234 567 89");
+      TextEditingController(text: "+01 234 567 89");
 
   String? _profileImagePath; // To store the selected image path
 
@@ -69,14 +69,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 clipper: _AppBarClipper(),
                 child: Container(
                   height: 180,
-                  color: Color(0xFFEAD6F6),
+                  color: Colors.deepPurple,
                 ),
               ),
               Transform.translate(
                 offset: Offset(0, -80),
                 child: Column(
                   children: [
-                    Stack( // Wrap the CircleAvatar with a Stack
+                    Stack(
+                      // Wrap the CircleAvatar with a Stack
                       children: [
                         CircleAvatar(
                           radius: 50,
@@ -84,15 +85,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: CircleAvatar(
                             radius: 45,
                             backgroundImage: _profileImagePath != null
-                                ? FileImage(File(_profileImagePath!)) as ImageProvider<Object>?
-                                : AssetImage("assets/images/profile.jpg") as ImageProvider<Object>?, // Use _profileImagePath
+                                ? FileImage(File(_profileImagePath!))
+                                    as ImageProvider<Object>?
+                                : AssetImage("assets/images/profile.jpg")
+                                    as ImageProvider<
+                                        Object>?, // Use _profileImagePath
                           ),
                         ),
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: GestureDetector(
-                            onTap: _pickImageFromGallery, // Call the image picker function
+                            onTap:
+                                _pickImageFromGallery, // Call the image picker function
                             child: Container(
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -113,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Text(
                       nameController.text,
                       style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       "${emailController.text} | ${phoneController.text}",
@@ -145,11 +150,11 @@ class _ProfileSectionState extends State<ProfileSection> {
   String notificationStatus = "ON";
 
   Widget buildTile(
-      IconData icon,
-      String title, {
-        Widget? trailing,
-        VoidCallback? onTap,
-      }) {
+    IconData icon,
+    String title, {
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -161,7 +166,8 @@ class _ProfileSectionState extends State<ProfileSection> {
   Widget buildToggleText() {
     return DropdownButton<String>(
       value: notificationStatus,
-      items: <String>['ON', 'OFF'].map<DropdownMenuItem<String>>((String value) {
+      items:
+          <String>['ON', 'OFF'].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(
@@ -191,7 +197,7 @@ class _ProfileSectionState extends State<ProfileSection> {
         Card(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(
@@ -228,8 +234,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                         builder: (context) => LanguageSettingsScreen()),
                   );
                 },
-                trailing:
-                Text("English", style: TextStyle(color: Colors.blue)),
+                trailing: Text("English", style: TextStyle(color: Colors.blue)),
               ),
             ],
           ),
@@ -237,7 +242,7 @@ class _ProfileSectionState extends State<ProfileSection> {
         Card(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(Icons.lock_outline, "Security"),
@@ -246,7 +251,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                 Icons.brightness_6_outlined,
                 "Theme",
                 trailing:
-                Text("Light mode", style: TextStyle(color: Colors.blue)),
+                    Text("Light mode", style: TextStyle(color: Colors.blue)),
               ),
             ],
           ),
@@ -254,7 +259,7 @@ class _ProfileSectionState extends State<ProfileSection> {
         Card(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(Icons.help_outline, "Help & Support"),

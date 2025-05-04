@@ -21,6 +21,7 @@ class Buddycard extends StatelessWidget {
           width: 140,
           height: 180,
           child: Card(
+            shadowColor: Colors.purple,
             elevation: 4,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
