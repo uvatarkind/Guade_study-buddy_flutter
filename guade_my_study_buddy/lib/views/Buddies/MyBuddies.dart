@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'createBuddy.dart';
 
 class MyBuddiesScreen extends StatefulWidget {
   final String searchQuery;
@@ -16,26 +17,25 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Dropdown
+        // Search + Dropdown
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Expanded(
+                flex: 2,
                 child: TextField(
                   onChanged: (value) {},
                   decoration: InputDecoration(
-                      hintText: 'Search...',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 0)),
+                    hintText: 'Search...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  ),
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
+              SizedBox(width: 10),
               Expanded(
                 flex: 1,
                 child: DropdownButton<String>(
@@ -53,13 +53,33 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
                   },
                 ),
               ),
-              // Content
-              Expanded(
-                child: _buildContentBasedOnStatus(selectedStatus),
-              ),
             ],
           ),
         ),
+
+        // Status-based content
+        Expanded(child: _buildContentBasedOnStatus(selectedStatus)),
+
+        // Create Buddy button (only for Joined or Pending)
+        if (selectedStatus == 'Joined' || selectedStatus == 'Pending')
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Createbuddy()),
+                );
+              },
+              icon: Icon(Icons.group_add),
+              label: Text("Create Buddy"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+                minimumSize: Size(double.infinity, 48),
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -14,19 +14,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: CreateBuddyGroupScreen(),
+      home: Createbuddy(),
     );
   }
 }
 
-class CreateBuddyGroupScreen extends StatefulWidget {
+class Createbuddy extends StatefulWidget {
   @override
-  _CreateBuddyGroupScreenState createState() => _CreateBuddyGroupScreenState();
+  _CreatebuddyState createState() => _CreatebuddyState();
 }
 
 enum PrivacyStatus { Private, Public }
 
-class _CreateBuddyGroupScreenState extends State<CreateBuddyGroupScreen> {
+class _CreatebuddyState extends State<Createbuddy> {
   PrivacyStatus _privacyStatus = PrivacyStatus.Private;
 
   @override
@@ -55,7 +55,8 @@ class _CreateBuddyGroupScreenState extends State<CreateBuddyGroupScreen> {
                 ),
                 filled: true,
                 fillColor: Colors.purple[50], // Light purple shade
-                contentPadding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
               ),
             ),
             SizedBox(height: 24),
@@ -103,7 +104,8 @@ class _CreateBuddyGroupScreenState extends State<CreateBuddyGroupScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('• Not visible to Everyone'),
-                        Text('• Buddy Group membership is by invitation link only'),
+                        Text(
+                            '• Buddy Group membership is by invitation link only'),
                       ],
                     )
                   : Text(
@@ -126,7 +128,8 @@ class _CreateBuddyGroupScreenState extends State<CreateBuddyGroupScreen> {
                 ),
                 filled: true,
                 fillColor: Colors.purple[50], // Light purple shade
-                contentPadding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
               ),
             ),
             SizedBox(height: 24),
