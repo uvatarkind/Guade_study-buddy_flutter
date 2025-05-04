@@ -17,40 +17,38 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Search + Dropdown
+        // Dropdown for "My Buddies" screen
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Expanded(
-                flex: 2,
-                child: TextField(
-                  onChanged: (value) {},
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
                 flex: 1,
-                child: DropdownButton<String>(
-                  value: selectedStatus,
-                  items: ['Joined', 'Pending', 'Request'].map((status) {
-                    return DropdownMenuItem<String>(
-                      value: status,
-                      child: Text(status),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedStatus = value!;
-                    });
-                  },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: _getStatusColor(selectedStatus),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: selectedStatus,
+                      dropdownColor: _getStatusColor(selectedStatus),
+                      iconEnabledColor: Colors.white,
+                      style: TextStyle(color: Colors.white),
+                      items: ['Joined', 'Pending', 'Request'].map((status) {
+                        return DropdownMenuItem<String>(
+                          value: status,
+                          child: Text(status),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedStatus = value!;
+                        });
+                      },
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -84,14 +82,28 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
     );
   }
 
+  /// 🟣🟡🟢 Status color helper
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Joined':
+        return Colors.deepPurple;
+      case 'Pending':
+        return Colors.amber;
+      case 'Request':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
   Widget _buildContentBasedOnStatus(String status) {
     switch (status) {
       case 'Joined':
-        return _buildGroupGrid(); // Study group cards + "Create buddies" button
+        return _buildGroupGrid();
       case 'Pending':
-        return _buildGroupGrid(); // Same layout, maybe with a "Pending" tag
+        return _buildGroupGrid();
       case 'Request':
-        return _buildRequestList(); // ListView of join requests
+        return _buildRequestList();
       default:
         return Center(child: Text('Unknown status'));
     }
@@ -153,9 +165,7 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
                 buddy['subjects']!,
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
-              const SizedBox(
-                height: 4,
-              )
+              const SizedBox(height: 4),
             ],
           ),
         );
@@ -183,14 +193,16 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton(
-                onPressed: () {},
-                child: Text("Accept"),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green)),
+              onPressed: () {},
+              child: Text("Accept"),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            ),
             SizedBox(width: 8),
             ElevatedButton(
-                onPressed: () {},
-                child: Text("Decline"),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red)),
+              onPressed: () {},
+              child: Text("Decline"),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            ),
           ],
         ),
       ),

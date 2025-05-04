@@ -39,7 +39,6 @@ class AllBuddiesScreen extends StatelessWidget {
     }).toList();
 
     return GridView.count(
-      
       crossAxisCount: 2,
       mainAxisSpacing: 5,
       crossAxisSpacing: 5,
@@ -55,6 +54,7 @@ class AllBuddiesScreen extends StatelessWidget {
           },
           child: Card(
             elevation: 6,
+            shadowColor: Colors.deepPurpleAccent,
             child: Column(
               children: [
                 Expanded(

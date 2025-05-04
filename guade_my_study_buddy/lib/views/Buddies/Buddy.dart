@@ -29,7 +29,7 @@ class _BuddiesPageState extends State<BuddiesPage> {
         ),
         body: Column(
           children: [
-            // Search bar
+            // Global Search bar for both screens (at the top)
             Padding(
               padding: const EdgeInsets.all(20),
               child: TextField(
@@ -51,8 +51,8 @@ class _BuddiesPageState extends State<BuddiesPage> {
             Expanded(
               child: TabBarView(
                 children: [
-                  AllBuddiesScreen(searchQuery: searchQuery),
-                  MyBuddiesScreen(searchQuery: searchQuery),
+                  AllBuddiesScreen(searchQuery: searchQuery), // All buddies tab
+                  MyBuddiesScreen(searchQuery: searchQuery), // My buddies tab
                 ],
               ),
             ),

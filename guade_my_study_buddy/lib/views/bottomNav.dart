@@ -32,7 +32,7 @@ class _MainNavPageState extends State<MainNavPage> {
             _currentIndex = index;
           });
         },
-        selectedItemColor: Colors.deepPurpleAccent,
+        selectedItemColor: Colors.deepPurple,
         unselectedItemColor: Colors.black,
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
