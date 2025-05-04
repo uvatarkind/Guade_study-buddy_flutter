@@ -2,27 +2,12 @@
 import 'dart:io'; // Import for File
 
 import 'package:flutter/material.dart';
+import 'package:guade_my_study_buddy/services/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'edit.dart';
 import 'notification.dart';
 import 'language.dart';
 import 'policy.dart';
-
-void main() {
-  runApp(ProfileApp());
-}
-
-class ProfileApp extends StatelessWidget {
-  const ProfileApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ProfileScreen(),
-    );
-  }
-}
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -148,7 +133,7 @@ class ProfileSection extends StatefulWidget {
 
 class _ProfileSectionState extends State<ProfileSection> {
   String notificationStatus = "ON";
-
+  bool _isLoggingOut = false;
   Widget buildTile(
     IconData icon,
     String title, {
@@ -188,6 +173,29 @@ class _ProfileSectionState extends State<ProfileSection> {
       underline: SizedBox(),
       icon: Icon(Icons.arrow_drop_down),
     );
+  }
+
+  Future<void> _handleLogout() async {
+    if (_isLoggingOut) return; // ✅ Prevent multiple clicks
+
+    setState(() => _isLoggingOut = true); // ✅ Show loading state
+
+    final authService = AuthService();
+    bool success = await authService.logout();
+
+    if (success) {
+      setState(() => _isLoggingOut = false); // Stop loading before navigation
+
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login', (route) => route.isFirst);
+    } else {
+      setState(() => _isLoggingOut = false); // ✅ Stop loading state
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Logout failed! Try again.'),
+            backgroundColor: Colors.red),
+      );
+    }
   }
 
   @override
@@ -278,6 +286,36 @@ class _ProfileSectionState extends State<ProfileSection> {
                 },
               ),
             ],
+          ),
+        ),
+        Card(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: _isLoggingOut
+                      ? null
+                      : _handleLogout, // ✅ Disable after first click
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: _isLoggingOut
+                      ? CircularProgressIndicator(
+                          color: Colors.white) // ✅ Show loading
+                      : Text("Logout",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
           ),
         ),
       ],
