@@ -82,9 +82,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      backgroundColor: const Color(0xFF9C27B0),
-
+      backgroundColor: Colors.deepPurple,
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         elevation: 0,
@@ -171,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // TODO: Add forgot password functionality
+                      Navigator.pushNamed(context, '/forgotPassword');
                     },
                     child: const Text('Forgot password?',
                         style: TextStyle(color: Colors.yellow, fontSize: 14)),
