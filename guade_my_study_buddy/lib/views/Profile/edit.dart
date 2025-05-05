@@ -15,7 +15,7 @@ class EditProfileApp extends StatelessWidget {
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
- 
+
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
@@ -39,8 +39,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ClipPath(
                 clipper: _AppBarClipper(),
                 child: Container(
-                  height: 120.0, // Adjust height as needed
-                  color: Color(0xFFEAD6F6),
+                  height: 150, // Adjust height as needed
+                  color: Colors.deepPurple,
                 ),
               ),
               Padding(
@@ -49,12 +49,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   leading: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    icon: Icon(Icons.arrow_back, color: Colors.white),
                     onPressed: () => Navigator.pop(context),
                   ),
                   title: Text(
                     'Edit profile',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -64,38 +67,48 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Padding(
               padding: EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align labels to the left
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Align labels to the left
                 children: [
-                  Text('Full name', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                  Text('Full name',
+                      style:
+                          TextStyle(fontSize: 12, color: Colors.grey.shade600)),
                   SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
                       hintText: 'Hanna Hanna',
                       border: _borderRadius,
                       enabledBorder: _borderRadius,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
                   ),
                   SizedBox(height: 15),
-                  Text('Email', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                  Text('Email',
+                      style:
+                          TextStyle(fontSize: 12, color: Colors.grey.shade600)),
                   SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
                       hintText: 'youremail@domain.com',
                       border: _borderRadius,
                       enabledBorder: _borderRadius,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
                   ),
                   SizedBox(height: 15),
-                  Text('Major', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                  Text('Major',
+                      style:
+                          TextStyle(fontSize: 12, color: Colors.grey.shade600)),
                   SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
                       hintText: 'Software Engineering',
                       border: _borderRadius,
                       enabledBorder: _borderRadius,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     ),
                   ),
                   SizedBox(height: 15),
@@ -105,17 +118,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Country', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                            Text('Country',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey.shade600)),
                             SizedBox(height: 5),
                             DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 border: _borderRadius,
                                 enabledBorder: _borderRadius,
-                                contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 12),
                               ),
                               value: _selectedCountry,
                               items: ['Ethiopia', 'USA', 'India']
-                                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                                  .map((e) => DropdownMenuItem(
+                                      value: e, child: Text(e)))
                                   .toList(),
                               onChanged: (value) {
                                 setState(() {
@@ -131,17 +148,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Gender', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                            Text('Gender',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey.shade600)),
                             SizedBox(height: 5),
                             DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 border: _borderRadius,
                                 enabledBorder: _borderRadius,
-                                contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 12),
                               ),
                               value: _selectedGender,
                               items: ['Female', 'Male']
-                                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                                  .map((e) => DropdownMenuItem(
+                                      value: e, child: Text(e)))
                                   .toList(),
                               onChanged: (value) {
                                 setState(() {
@@ -157,16 +178,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   SizedBox(height: 30), // Increased spacing before the button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 119, 5, 139),
+                      backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      minimumSize: Size(double.infinity, 45), // Adjusted button height
+                      minimumSize:
+                          Size(double.infinity, 45), // Adjusted button height
                     ),
                     onPressed: () {},
                     child: Text(
                       'SUBMIT',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16), // Adjusted font size
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16), // Adjusted font size
                     ),
                   )
                 ],

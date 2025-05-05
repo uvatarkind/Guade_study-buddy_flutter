@@ -48,7 +48,7 @@ class Buddycard extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: Color(0xFF7D1FB8), // Purple color
+                          color: Colors.deepPurple, // Purple color
                         ),
                       ),
                       const SizedBox(height: 4),

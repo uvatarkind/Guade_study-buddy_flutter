@@ -52,7 +52,7 @@ class DynamicBarChart extends StatelessWidget {
       barRods: [
         BarChartRodData(
           toY: data.timeSpent,
-          color:  const Color.fromARGB(255, 119, 5, 139), // Customize bar color
+          color: Colors.deepPurple, // Customize bar color
           width: 16, // Customize bar width
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(4),
@@ -69,8 +69,9 @@ class DynamicBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     // Find the maximum time spent to set maxY for the chart
     final double maxY = apiData.map((data) => data.timeSpent).reduce(
-          (a, b) => a > b ? a : b,
-        ) + 1; // Add some padding above the max value
+              (a, b) => a > b ? a : b,
+            ) +
+        1; // Add some padding above the max value
 
     return AspectRatio(
       aspectRatio: 1.7, // Adjust aspect ratio as needed
@@ -79,7 +80,8 @@ class DynamicBarChart extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.only(top: 18.0, right: 18.0, left: 6.0, bottom: 6.0),
+          padding: const EdgeInsets.only(
+              top: 18.0, right: 18.0, left: 6.0, bottom: 6.0),
           child: BarChart(
             BarChartData(
               alignment: BarChartAlignment.spaceAround,
@@ -91,7 +93,8 @@ class DynamicBarChart extends StatelessWidget {
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
                     // Display the time spent value on top of the bar
                     return BarTooltipItem(
-                      rod.toY.toStringAsFixed(1), // Format the value (e.g., 2.0, 2.5)
+                      rod.toY.toStringAsFixed(
+                          1), // Format the value (e.g., 2.0, 2.5)
                       const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -102,10 +105,11 @@ class DynamicBarChart extends StatelessWidget {
                 ),
                 // Make tooltips always visible (optional, but shows values on top)
                 // You might need to manage state to control visibility if you don't want them always on
-                 touchCallback: (FlTouchEvent event, BarTouchResponse? response) {
-                   // This callback is needed to make the tooltip show on hover/tap
-                   // You can add more logic here if you need interactive behavior
-                 },
+                touchCallback:
+                    (FlTouchEvent event, BarTouchResponse? response) {
+                  // This callback is needed to make the tooltip show on hover/tap
+                  // You can add more logic here if you need interactive behavior
+                },
               ),
               titlesData: FlTitlesData(
                 show: true,
@@ -115,10 +119,12 @@ class DynamicBarChart extends StatelessWidget {
                     getTitlesWidget: (value, meta) {
                       // Get the corresponding DailyTimeData for the value (day index)
                       final data = apiData.firstWhere(
-                          (d) => d.dayIndex == value.toInt(),
-                          orElse: () => DailyTimeData(-1, 0), // Provide a default if not found
+                        (d) => d.dayIndex == value.toInt(),
+                        orElse: () => DailyTimeData(
+                            -1, 0), // Provide a default if not found
                       );
-                      if (data.dayIndex == -1) return Container(); // Hide title if no data for the day
+                      if (data.dayIndex == -1)
+                        return Container(); // Hide title if no data for the day
 
                       // Display the day name for the days with data
                       return SideTitleWidget(
@@ -143,9 +149,9 @@ class DynamicBarChart extends StatelessWidget {
                     reservedSize: 28,
                     getTitlesWidget: (value, meta) {
                       // Display left axis titles (e.g., 0, 1, 2, ...)
-                       if (value == 0) {
-                         return Container(); // Hide 0
-                       }
+                      if (value == 0) {
+                        return Container(); // Hide 0
+                      }
                       return Text(
                         value.toInt().toString(),
                         style: const TextStyle(
@@ -182,5 +188,3 @@ class DynamicBarChart extends StatelessWidget {
     );
   }
 }
-
-

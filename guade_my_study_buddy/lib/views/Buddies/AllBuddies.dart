@@ -65,7 +65,7 @@ class AllBuddiesScreen extends StatelessWidget {
                   child: Text(
                     buddy['name']!,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.purple),
+                        fontWeight: FontWeight.bold, color: Colors.deepPurple),
                   ),
                 ),
                 Text(
