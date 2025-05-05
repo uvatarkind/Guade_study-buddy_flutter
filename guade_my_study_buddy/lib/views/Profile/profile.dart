@@ -1,30 +1,54 @@
-// main.dart
-import 'dart:io'; // Import for File
-
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:guade_my_study_buddy/services/auth_service.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '/models/user_models.dart';
+import '/services/user_service.dart';
 import 'edit.dart';
 import 'notification.dart';
 import 'language.dart';
 import 'policy.dart';
+import 'package:image_picker/image_picker.dart';
+import '/services/auth_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
-  // Make it StatefulWidget
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController nameController =
-      TextEditingController(text: "Hanna Hanna");
-  final TextEditingController emailController =
-      TextEditingController(text: "youremail@domain.com");
-  final TextEditingController phoneController =
-      TextEditingController(text: "+01 234 567 89");
+  UserModel? _user;
+  bool _isLoading = true;
+  String? _profileImagePath;
 
-  String? _profileImagePath; // To store the selected image path
+  final TextEditingController nameController =
+  TextEditingController(text: "Hanna Hanna");
+  final TextEditingController emailController =
+  TextEditingController(text: "youremail@domain.com");
+  final TextEditingController phoneController =
+  TextEditingController(text: "+01 234 567 89");
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("auth_token");
+
+    if (token != null) {
+      final userService = UserService();
+      final user = await userService.fetchUserProfile(token);
+
+      setState(() {
+        _user = user;
+        _isLoading = false;
+      });
+    }
+  }
 
   Future<void> _pickImageFromGallery() async {
     final picker = ImagePicker();
@@ -34,11 +58,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _profileImagePath = pickedFile.path;
       });
-      print('Image selected: $_profileImagePath');
-      // You might want to save this path somewhere persistent
-      // (e.g., using shared_preferences) so it loads next time.
-    } else {
-      print('No image selected.');
     }
   }
 
@@ -62,27 +81,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     Stack(
-                      // Wrap the CircleAvatar with a Stack
                       children: [
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: Colors.white,
-                          child: CircleAvatar(
-                            radius: 45,
-                            backgroundImage: _profileImagePath != null
-                                ? FileImage(File(_profileImagePath!))
-                                    as ImageProvider<Object>?
-                                : AssetImage("assets/images/profile.jpg")
-                                    as ImageProvider<
-                                        Object>?, // Use _profileImagePath
-                          ),
+                          backgroundImage: _isLoading
+                              ? AssetImage("assets/images/profile.jpg")
+                              : (_user?.imageUrl != null
+                              ? NetworkImage(_user!.imageUrl!)
+                              : (_profileImagePath != null
+                              ? FileImage(File(_profileImagePath!))
+                              : AssetImage("assets/images/profile.jpg"))
+                          ) as ImageProvider<Object>,
                         ),
+                        if (_isLoading)
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: CircularProgressIndicator(),
+                          ),
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: GestureDetector(
-                            onTap:
-                                _pickImageFromGallery, // Call the image picker function
+                            onTap: _pickImageFromGallery,
                             child: Container(
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -100,13 +122,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      nameController.text,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    _isLoading
+                        ? CircularProgressIndicator()
+                        : Text(
+                      _user?.name ?? "Unknown",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      "${emailController.text} | ${phoneController.text}",
+                    _isLoading
+                        ? CircularProgressIndicator()
+                        : Text(
+                      "${_user?.email ?? "Unknown"}",
                       style: TextStyle(color: Colors.black54),
                       textAlign: TextAlign.center,
                     ),
@@ -134,12 +159,13 @@ class ProfileSection extends StatefulWidget {
 class _ProfileSectionState extends State<ProfileSection> {
   String notificationStatus = "ON";
   bool _isLoggingOut = false;
+
   Widget buildTile(
-    IconData icon,
-    String title, {
-    Widget? trailing,
-    VoidCallback? onTap,
-  }) {
+      IconData icon,
+      String title, {
+        Widget? trailing,
+        VoidCallback? onTap,
+      }) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -151,8 +177,7 @@ class _ProfileSectionState extends State<ProfileSection> {
   Widget buildToggleText() {
     return DropdownButton<String>(
       value: notificationStatus,
-      items:
-          <String>['ON', 'OFF'].map<DropdownMenuItem<String>>((String value) {
+      items: <String>['ON', 'OFF'].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(
@@ -176,24 +201,23 @@ class _ProfileSectionState extends State<ProfileSection> {
   }
 
   Future<void> _handleLogout() async {
-    if (_isLoggingOut) return; // ✅ Prevent multiple clicks
+    if (_isLoggingOut) return;
 
-    setState(() => _isLoggingOut = true); // ✅ Show loading state
+    setState(() => _isLoggingOut = true);
 
     final authService = AuthService();
     bool success = await authService.logout();
 
     if (success) {
-      setState(() => _isLoggingOut = false); // Stop loading before navigation
+      setState(() => _isLoggingOut = false);
 
       Navigator.pushNamedAndRemoveUntil(
           context, '/login', (route) => route.isFirst);
     } else {
-      setState(() => _isLoggingOut = false); // ✅ Stop loading state
+      setState(() => _isLoggingOut = false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Logout failed! Try again.'),
-            backgroundColor: Colors.red),
+            content: Text('Logout failed! Try again.'), backgroundColor: Colors.red),
       );
     }
   }
@@ -204,8 +228,7 @@ class _ProfileSectionState extends State<ProfileSection> {
       children: [
         Card(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(
@@ -225,8 +248,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => NotificationsScreen()),
+                    MaterialPageRoute(builder: (context) => NotificationsScreen()),
                   );
                 },
                 trailing: buildToggleText(),
@@ -238,8 +260,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => LanguageSettingsScreen()),
+                    MaterialPageRoute(builder: (context) => LanguageSettingsScreen()),
                   );
                 },
                 trailing: Text("English", style: TextStyle(color: Colors.blue)),
@@ -249,8 +270,7 @@ class _ProfileSectionState extends State<ProfileSection> {
         ),
         Card(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(Icons.lock_outline, "Security"),
@@ -258,16 +278,14 @@ class _ProfileSectionState extends State<ProfileSection> {
               buildTile(
                 Icons.brightness_6_outlined,
                 "Theme",
-                trailing:
-                    Text("Light mode", style: TextStyle(color: Colors.blue)),
+                trailing: Text("Light mode", style: TextStyle(color: Colors.blue)),
               ),
             ],
           ),
         ),
         Card(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(Icons.help_outline, "Help & Support"),
@@ -280,8 +298,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => PrivacyPolicyScreen()),
+                    MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()),
                   );
                 },
               ),
@@ -290,16 +307,13 @@ class _ProfileSectionState extends State<ProfileSection> {
         ),
         Card(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: EdgeInsets.all(12),
             child: Column(
               children: [
                 ElevatedButton(
-                  onPressed: _isLoggingOut
-                      ? null
-                      : _handleLogout, // ✅ Disable after first click
+                  onPressed: _isLoggingOut ? null : _handleLogout,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
@@ -308,11 +322,10 @@ class _ProfileSectionState extends State<ProfileSection> {
                         borderRadius: BorderRadius.circular(10)),
                   ),
                   child: _isLoggingOut
-                      ? CircularProgressIndicator(
-                          color: Colors.white) // ✅ Show loading
+                      ? CircularProgressIndicator(color: Colors.white)
                       : Text("Logout",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
