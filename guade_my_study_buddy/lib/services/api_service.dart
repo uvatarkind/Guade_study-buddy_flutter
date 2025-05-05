@@ -1,6 +1,6 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
@@ -82,6 +82,68 @@ class ApiService {
       return json.decode(response.body);
     } else {
       throw Exception('API Error: ${response.statusCode} - ${response.body}');
+    }
+  }
+}
+
+// ! Just for localserver
+class BuddyService {
+  //!!! DON'T FORGET TO ADD THE LOCAL SEVER HERE
+  // !! HOW WOULD YOU HANDLE THE IMAGE THERE IS NO GROUP PROFILE IMAGE PROVIDER
+  final String baseUrl = 'http://localhost:3123'; // TODO: don't forget to run the with the correct port number
+  
+
+  // Fetch buddies list
+  Future<List<dynamic>> getBuddies() async {
+    final response = await http.get(Uri.parse('$baseUrl/myBuddies'));
+    
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load buddies');
+    }
+  }
+
+  // Add a new buddy
+  Future<void> addBuddy(Map<String, dynamic> newBuddy) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/myBuddies'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(newBuddy),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to add buddy');
+    }
+  }
+}
+
+
+class HoursService {
+  //!!! DON'T FORGET TO ADD THE LOCAL SERVER HERE
+  final String baseUrl = 'http://localhost:3123'; // TODO: don't forget to run with the correct port number
+
+  // Fetch hours spent list
+  Future<List<dynamic>> getHoursSpent() async {
+    final response = await http.get(Uri.parse('$baseUrl/hoursSpent'));
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load hours spent data');
+    }
+  }
+
+  // Add new hours spent entry
+  Future<void> addHoursSpent(Map<String, dynamic> newEntry) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/hoursSpent'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(newEntry),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to add hours spent entry');
     }
   }
 }

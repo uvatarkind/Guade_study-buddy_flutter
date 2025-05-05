@@ -109,7 +109,7 @@ class AuthService {
 
     developer.log('Retrieved token before logout: $token');
 
-    if (token == null || token.isEmpty) {
+    if (token != null && token.isEmpty) {
       developer.log('Logout failed: No token found.');
       return false;
     }

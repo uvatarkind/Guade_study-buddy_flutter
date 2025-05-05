@@ -1,0 +1,60 @@
+{
+  "myBuddies": [
+    {
+      "id": "3913",
+      "name": "SUPER NOVA",
+      "subjects": "Maths, Physics, Astronomy",
+      "image": "assets/images/profile.jpg",
+      "description": "A brilliant mind that shines like a supernova, excelling in mathematics, physics, and astronomy."
+    },
+    {
+      "id": "3914",
+      "name": "NERD HERD",
+      "subjects": "Science, Biology, Chemistry",
+      "image": "assets/images/buddy2.jpg",
+      "description": "A collective of science enthusiasts who dive deep into biology and chemistry with passion."
+    },
+    {
+      "id": "3915",
+      "name": "TECH CREW",
+      "subjects": "CS, AI, Programming",
+      "image": "assets/images/buddy3.jpg",
+      "description": "Tech-savvy innovators who explore artificial intelligence, coding, and the world of computer science."
+    },
+    {
+      "id": "3916",
+      "name": "LOGIC LEGENDS",
+      "subjects": "Maths, Logic, Reasoning",
+      "image": "assets/images/buddy4.jpg",
+      "description": "Masters of logical thinking and problem-solving, always ready for a challenge."
+    },
+    {
+      "id": "3917",
+      "name": "The New Butterfly",
+      "image": "https://images.unsplash.com/photo-1633621412960-6df85eff8c85?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGltYWdlfGVufDB8fDB8fHww",
+      "description": "well this is a group that people from all aroud the world will discus about BUTTERFLYS.",
+      "subjects": "Biology,Zoology"
+    },
+    {
+      "id": "83a7",
+      "name": "The Geologists",
+      "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFuZHNjYXBlfGVufDB8fDB8fHww",
+      "description": "we will talk about anything that the earth is mattered from",
+      "subjects": "Geography,Geology,Metalurgy"
+    },
+    {
+      "id": "eb03",
+      "name": "Rune",
+      "image": "https://images.unsplash.com/photo-1578320743746-788d990bd318?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGtpbmd8ZW58MHx8MHx8fDA%3D",
+      "description": "we discuss and reflect on any Historical facts, untold stories",
+      "subjects": "History,Religion"
+    },
+    {
+      "id": "e89d",
+      "name": "The Math Nerds",
+      "image": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWF0aHxlbnwwfHwwfHx8MA%3D%3D",
+      "description": "for math dummys only",
+      "subjects": "Math,Algebra,Geometry,Calculation"
+    }
+  ]
+}

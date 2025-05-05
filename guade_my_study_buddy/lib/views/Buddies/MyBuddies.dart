@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guade_my_study_buddy/services/api_service.dart';
 import 'createBuddy.dart';
 import 'BuddyChatScreen.dart';
 
@@ -13,6 +14,60 @@ class MyBuddiesScreen extends StatefulWidget {
 
 class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   String selectedStatus = 'Joined'; // Default status
+  List<Map<String, String>>? buddies = [];
+  /*          // todo: 
+  List<Map<String, String>> buddies = [
+    {
+      "name": "SUPER NOVA",
+      "subjects": "Maths, Physics, Astronomy",
+      "image": "assets/images/buddy1.jpg"
+    },
+    {
+      "name": "NERD HERD",
+      "subjects": "Science, Biology, Chemistry",
+      "image": "assets/images/buddy2.jpg"
+    },
+    {
+      "name": "TECH CREW",
+      "subjects": "CS, AI, Programming",
+      "image": "assets/images/buddy3.jpg"
+    },
+    {
+      "name": "LOGIC LEGENDS",
+      "subjects": "Maths, Logic, Reasoning",
+      "image": "assets/images/buddy4.jpg"
+    },
+  ];
+*/
+  @override
+  void initState() {
+    super.initState();
+    fetchBuddies();
+  }
+
+  Future<void> fetchBuddies() async {
+    try {
+      List<dynamic> buddiesFromJson = await BuddyService().getBuddies();
+
+      setState(() {
+        buddies = buddiesFromJson
+            .map((item) => (item as Map<String, dynamic>).map((key, value) {
+                  if (key == 'subjects' && value is List<String>) {
+                    return MapEntry(
+                        key,
+                        value.join(
+                            ', ')); // Convert list to comma-separated string
+                  }
+                  return MapEntry(key, value.toString());
+                }))
+            .toList();
+      });
+
+      print('IT WORKS PERFECTLY!!');
+    } catch (error) {
+      print('Error fetching data from the local server: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +120,18 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  // Make the callback async to reRender each time a new buddy is created
+
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Createbuddy()),
                   );
+                  if (mounted) {
+                    setState(() {
+                      print('Returned from Createbuddy, Parent refreshing...');
+                    });
+                  }
                 },
                 icon: Icon(Icons.group_add),
                 label: Text("Create Buddy"),
@@ -113,35 +175,13 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   }
 
   Widget _buildGroupGrid() {
-    final List<Map<String, String>> buddies = [
-      {
-        "name": "SUPER NOVA",
-        "subjects": "Maths, Physics, Astronomy",
-        "image": "assets/images/buddy1.jpg"
-      },
-      {
-        "name": "NERD HERD",
-        "subjects": "Science, Biology, Chemistry",
-        "image": "assets/images/buddy2.jpg"
-      },
-      {
-        "name": "TECH CREW",
-        "subjects": "CS, AI, Programming",
-        "image": "assets/images/buddy3.jpg"
-      },
-      {
-        "name": "LOGIC LEGENDS",
-        "subjects": "Maths, Logic, Reasoning",
-        "image": "assets/images/buddy4.jpg"
-      },
-    ];
-
-    final filtered = buddies.where((buddy) {
-      final query = widget.searchQuery.toLowerCase();
-      return buddy['name']!.toLowerCase().contains(query) ||
-          buddy['subjects']!.toLowerCase().contains(query);
-    }).toList();
-
+    final filtered = buddies != null
+        ? buddies!.where((buddy) {
+            final query = widget.searchQuery.toLowerCase();
+            return buddy['name']!.toLowerCase().contains(query) ||
+                buddy['subjects']!.toLowerCase().contains(query);
+          }).toList()
+        : [];
     return GridView.count(
       crossAxisCount: 2,
       mainAxisSpacing: 4,
@@ -165,9 +205,17 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
             elevation: 4,
             child: Column(
               children: [
-                Expanded(
-                  child: Image.asset(buddy['image']!, fit: BoxFit.cover),
-                ),
+                buddy['image'].toString().contains('https')
+                    ? Expanded(
+                        child: Image.network(
+                          buddy['image']!, // Replace with your image URL
+                          fit: BoxFit
+                              .cover, // Adjust how the image fits inside the container
+                        ),
+                      )
+                    : Expanded(
+                        child: Image.asset(buddy['image']!, fit: BoxFit.cover),
+                      ),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(

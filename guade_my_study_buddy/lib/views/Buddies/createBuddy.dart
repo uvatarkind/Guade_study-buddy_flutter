@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../ReusableWiget/tag_input_weidget.dart';
+import 'package:guade_my_study_buddy/models/my_buddies.dart';
+import 'package:guade_my_study_buddy/services/api_service.dart';
+// import 'package:guade_my_study_buddy/services/api_service.dart'; // Ensure this is correctly imported if used later
+import '../ReusableWiget/tag_input_weidget.dart'; // Ensure this path is correct
 
 // void main() {
 //   runApp(MyApp());
@@ -30,34 +33,90 @@ class _CreatebuddyState extends State<Createbuddy> {
   PrivacyStatus _privacyStatus = PrivacyStatus.Private;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _imageUrlController =
+      TextEditingController(); // Controller for image URL
+  List<String>? tagList;
+  String _selectedImageUrl = ''; // Variable to hold the selected image URL
   bool _isSaving = false;
 
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _imageUrlController.dispose(); // Dispose the image URL controller
     super.dispose();
   }
 
   void _handleCreate() async {
-    if (_nameController.text.trim().isEmpty) {
+    // Trim whitespace from text fields
+    final String name = _nameController.text.trim();
+    final String description = _descriptionController.text.trim();
+    final String imageUrl =
+        _imageUrlController.text.trim(); // Get URL from controller
+
+    // Validate inputs
+    if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please enter a group name')),
       );
       return;
     }
-
+    if (description.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a description')),
+      );
+      return;
+    }
+    if (tagList == null || tagList!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter at least one tag')),
+      );
+      return;
+    }
+    // Check if image URL is provided
+    if (imageUrl.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please provide an image URL')),
+      );
+      return;
+    }
+    // creating new Buddy group
+    Map<String, dynamic> newBuddy = {
+      'name': name,
+      'image': imageUrl,
+      'description': description,
+      'subjects': tagList!.join(',')
+    };
+    // posting the new buddy group onto the local_data.json file
+    BuddyService().addBuddy(newBuddy);
+    // Update state with the selected URL for display/use
     setState(() {
+      _selectedImageUrl = imageUrl;
       _isSaving = true;
     });
 
+    // --- Start API Call Logic (Replace with your actual API call) ---
+    // You would typically send name, description, _privacyStatus, tagList, and _selectedImageUrl to your API
+    print('Creating group with:');
+    print('Name: $name');
+    print('Description: $description');
+    print('Privacy: $_privacyStatus');
+    print('Tags: $tagList');
+    print('Image URL: $_selectedImageUrl'); // Use the stored URL here
+
     // Simulate API call
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2)); // Simulate network delay
 
-    setState(() {
-      _isSaving = false;
-    });
+    // Assuming API call was successful
+    // final bool success = await ApiService.createBuddyGroup(
+    //   name: name,
+    //   description: description,
+    //   privacy: _privacyStatus.toString().split('.').last, // Convert enum to string
+    //   tags: tagList!,
+    //   imageUrl: _selectedImageUrl,
+    // );
 
+    // if (success) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Study group created successfully!'),
@@ -65,13 +124,30 @@ class _CreatebuddyState extends State<Createbuddy> {
         duration: Duration(seconds: 2),
       ),
     );
+    Navigator.pop(context); // Return to previous screen
+    // } else {
+    //    ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('Failed to create study group. Please try again.'),
+    //       backgroundColor: Colors.red,
+    //       duration: Duration(seconds: 2),
+    //     ),
+    //   );
+    // }
 
-    Navigator.pop(context);
+    // --- End API Call Logic ---
+
+    setState(() {
+      _isSaving = false;
+    });
   }
 
   void _handleCancel() {
+    // Check if any fields (name, description, image URL) have content
     if (_nameController.text.isNotEmpty ||
-        _descriptionController.text.isNotEmpty) {
+        _descriptionController.text.isNotEmpty ||
+        _imageUrlController.text.isNotEmpty) {
+      // Include image URL controller check
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -79,7 +155,7 @@ class _CreatebuddyState extends State<Createbuddy> {
           content: Text('Are you sure you want to discard your changes?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(context), // Close dialog
               child: Text('No'),
             ),
             TextButton(
@@ -93,7 +169,8 @@ class _CreatebuddyState extends State<Createbuddy> {
         ),
       );
     } else {
-      Navigator.pop(context);
+      Navigator.pop(
+          context); // Return to previous screen directly if no changes
     }
   }
 
@@ -109,6 +186,62 @@ class _CreatebuddyState extends State<Createbuddy> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            // Group Image Section
+            Center(
+              // Center the CircleAvatar
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 40, // Larger radius for the main image
+                    backgroundColor:
+                        Colors.purple[100], // Placeholder background
+                    backgroundImage: _selectedImageUrl.isNotEmpty
+                        ? NetworkImage(
+                            _selectedImageUrl) // Show network image if URL is not empty
+                        : null, // No background image if URL is empty
+                    child: _selectedImageUrl.isEmpty
+                        ? Icon(
+                            // Show an icon as placeholder if no image selected
+                            Icons.group,
+                            size: 40,
+                            color: Colors.purple[700],
+                          )
+                        : null, // No child if image is loaded
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Buddy Group Image URL',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    controller: _imageUrlController,
+                    decoration: InputDecoration(
+                      hintText: 'Paste image URL here',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.purple[50],
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 15.0),
+                    ),
+                    keyboardType: TextInputType.url, // Suggest URL keyboard
+                    onChanged: (url) {
+                      // Optional: Update the preview as the user types
+                      setState(() {
+                        _selectedImageUrl = url.trim();
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 24), // Spacing after image section
+
+            // Buddy Name Section
             Text(
               'Buddy Name',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -129,6 +262,8 @@ class _CreatebuddyState extends State<Createbuddy> {
               ),
             ),
             SizedBox(height: 24),
+
+            // Privacy Section
             Text(
               'Privacy and Visibility',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -182,6 +317,8 @@ class _CreatebuddyState extends State<Createbuddy> {
                     ),
             ),
             SizedBox(height: 24),
+
+            // Description Section
             Text(
               'Study Group Description',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -203,13 +340,24 @@ class _CreatebuddyState extends State<Createbuddy> {
               ),
             ),
             SizedBox(height: 24),
+
+            // Tags Section
             Text(
               'Create Your Tag',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            TagInputWidget(),
+            TagInputWidget(
+              onTagsChanged: (tagsFromChildWeidget) => {
+                setState(() {
+                  tagList = tagsFromChildWeidget;
+                  print(tagList); // Keep print for debugging if needed
+                })
+              },
+            ),
             SizedBox(height: 40),
+
+            // Action Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[

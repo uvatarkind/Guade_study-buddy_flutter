@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-// Data structure to hold daily time spent
+// Data structure to hold daily time spent (representing hours)
 class DailyTimeData {
   final int dayIndex; // 0 for Mon, 1 for Tue, ... 6 for Sun
   final double timeSpent; // in hours
@@ -9,19 +9,11 @@ class DailyTimeData {
   DailyTimeData(this.dayIndex, this.timeSpent);
 }
 
-// Sample data simulating API response
-//todo: the api data should be sorted before use
-List<DailyTimeData> apiData = [
-  DailyTimeData(0, 2), // Monday: 2 hours
-  DailyTimeData(1, 0.5), // Tuestday: 0.5 hours
-  DailyTimeData(2, 2.5), // Wednesday: 2.5 hours
-
-  DailyTimeData(4, 4), // Friday: 4 hours
-  DailyTimeData(6, 2), // Sunday: 2 hours
-];
-
 class DynamicBarChart extends StatelessWidget {
-  const DynamicBarChart({Key? key}) : super(key: key);
+  // Accept the data list via constructor
+  final List<DailyTimeData> weeklyData;
+
+  const DynamicBarChart({Key? key, required this.weeklyData}) : super(key: key);
 
   // Helper function to get the day name from the index
   String getDayName(int dayIndex) {
@@ -51,7 +43,7 @@ class DynamicBarChart extends StatelessWidget {
       x: data.dayIndex,
       barRods: [
         BarChartRodData(
-          toY: data.timeSpent,
+          toY: data.timeSpent, // Use 'timeSpent' from DailyTimeData
           color: Colors.deepPurple, // Customize bar color
           width: 16, // Customize bar width
           borderRadius: const BorderRadius.only(
@@ -61,17 +53,33 @@ class DynamicBarChart extends StatelessWidget {
         ),
       ],
       // Configure showing tooltip indicators to display values
-      showingTooltipIndicators: [0], // Show tooltip for the first rod (index 0)
+      // Only show tooltip if the value is greater than 0
+      showingTooltipIndicators: data.timeSpent > 0 ? [0] : [],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     // Find the maximum time spent to set maxY for the chart
-    final double maxY = apiData.map((data) => data.timeSpent).reduce(
+    // Ensure maxY is at least 1 if all values are 0
+    final double maxY = weeklyData.isEmpty
+        ? 1.0
+        : (weeklyData.map((data) => data.timeSpent).reduce(
               (a, b) => a > b ? a : b,
-            ) +
-        1; // Add some padding above the max value
+            )).ceilToDouble() + 1; // Find max value, round up, add padding
+
+
+    // Create bar groups for all 7 days, even if the timeSpent is 0
+    // This ensures all weekdays are shown on the axis.
+    final List<BarChartGroupData> allWeeklyGroups = List.generate(7, (index) {
+        // Find the data for this day index, or use a default with timeSpent 0
+        final DailyTimeData dataForDay = weeklyData.firstWhere(
+            (d) => d.dayIndex == index,
+            orElse: () => DailyTimeData(index, 0.0), // Default to 0 hours
+        );
+        return makeGroupData(dataForDay);
+    });
+
 
     return AspectRatio(
       aspectRatio: 1.7, // Adjust aspect ratio as needed
@@ -89,27 +97,39 @@ class DynamicBarChart extends StatelessWidget {
               barTouchData: BarTouchData(
                 enabled: true, // Enable touch data for tooltips
                 touchTooltipData: BarTouchTooltipData(
-                  // tooltipBgColor: Colors.blueGrey, // Tooltip background color
-                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                    // Display the time spent value on top of the bar
-                    return BarTooltipItem(
-                      rod.toY.toStringAsFixed(
-                          1), // Format the value (e.g., 2.0, 2.5)
-                      const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    );
-                  },
+                   tooltipRoundedRadius: 8.0, // This property is still valid
+                   tooltipMargin: 8.0, // This property is still valid
+                   // tooltipBgColor and arrowLength are removed
+                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                     // Display the value as hours with one decimal place if needed
+                     if (rod.toY <= 0) return null; // Hide tooltip for 0 values
+
+                      String tooltipText;
+                      if (rod.toY == rod.toY.toInt()) { // If it's a whole number
+                          tooltipText = '${rod.toY.toInt()}h';
+                      } else { // Otherwise, show one decimal place
+                          tooltipText = '${rod.toY.toStringAsFixed(1)}h';
+                      }
+
+                     return BarTooltipItem(
+                       tooltipText,
+                       const TextStyle(
+                         color: Colors.white,
+                         fontWeight: FontWeight.bold,
+                         fontSize: 12,
+                       ),
+                       // Apply the background color using decoration here
+                      //  decoration: BoxDecoration(
+                      //    color: Colors.deepPurple.withOpacity(0.7),
+                      //    borderRadius: BorderRadius.circular(4),
+                      //  ),
+                     );
+                   },
                 ),
-                // Make tooltips always visible (optional, but shows values on top)
-                // You might need to manage state to control visibility if you don't want them always on
-                touchCallback:
-                    (FlTouchEvent event, BarTouchResponse? response) {
-                  // This callback is needed to make the tooltip show on hover/tap
-                  // You can add more logic here if you need interactive behavior
-                },
+                 touchCallback: (FlTouchEvent event, BarTouchResponse? response) {
+                   // This callback is needed to make the tooltip show on hover/tap
+                   // You can add more logic here if you need interactive behavior
+                 },
               ),
               titlesData: FlTitlesData(
                 show: true,
@@ -117,28 +137,23 @@ class DynamicBarChart extends StatelessWidget {
                   sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: (value, meta) {
-                      // Get the corresponding DailyTimeData for the value (day index)
-                      final data = apiData.firstWhere(
-                        (d) => d.dayIndex == value.toInt(),
-                        orElse: () => DailyTimeData(
-                            -1, 0), // Provide a default if not found
-                      );
-                      if (data.dayIndex == -1)
-                        return Container(); // Hide title if no data for the day
-
-                      // Display the day name for the days with data
-                      return SideTitleWidget(
-                        axisSide: meta.axisSide,
-                        space: 4,
-                        child: Text(
-                          getDayName(data.dayIndex),
-                          style: const TextStyle(
-                            color: Color(0xff7589a2),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                          ),
-                        ),
-                      );
+                      // Display the day name for all 7 day indices
+                      final int dayIndex = value.toInt();
+                       if (dayIndex >= 0 && dayIndex < 7) {
+                         return SideTitleWidget(
+                           axisSide: meta.axisSide,
+                           space: 4,
+                           child: Text(
+                             getDayName(dayIndex),
+                             style: const TextStyle(
+                               color: Color(0xff7589a2),
+                               fontWeight: FontWeight.bold,
+                               fontSize: 10,
+                             ),
+                           ),
+                         );
+                       }
+                       return Container(); // Hide title if not a valid day index
                     },
                     reservedSize: 20,
                   ),
@@ -148,18 +163,29 @@ class DynamicBarChart extends StatelessWidget {
                     showTitles: true,
                     reservedSize: 28,
                     getTitlesWidget: (value, meta) {
-                      // Display left axis titles (e.g., 0, 1, 2, ...)
+                      // Display left axis titles (e.g., 0h, 1h, 2h, ...)
                       if (value == 0) {
-                        return Container(); // Hide 0
-                      }
-                      return Text(
-                        value.toInt().toString(),
-                        style: const TextStyle(
-                          color: Color(0xff7589a2),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10,
-                        ),
-                      );
+                         return Text(
+                            '0h',
+                             style: const TextStyle(
+                                color: Color(0xff7589a2),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                             ),
+                             textAlign: TextAlign.center,
+                         );
+                       } else if (value % 1 == 0 && value <= maxY) { // Show whole numbers up to max
+                         return Text(
+                            '${value.toInt()}h',
+                             style: const TextStyle(
+                                color: Color(0xff7589a2),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                             ),
+                             textAlign: TextAlign.center,
+                         );
+                       }
+                      return Container(); // Hide intermediate and outside values
                     },
                   ),
                 ),
@@ -174,13 +200,21 @@ class DynamicBarChart extends StatelessWidget {
                 show: true,
                 drawHorizontalLine: true,
                 drawVerticalLine: false,
-                horizontalInterval: 1,
+                horizontalInterval: 1, // Show grid lines at integer values (hours)
+                // Optional: customize grid line color/style if needed
+                // getDrawingHorizontalLine: (value) => const FlLine(
+                //   color: Color(0xffe0e0e0),
+                //   strokeWidth: 0.5,
+                // ),
+                 // drawVerticalLine: false, // Already set above
               ),
               borderData: FlBorderData(
-                show: false,
+                show: false, // Hide default border
+                 // Optional: Add custom borders if needed
+                 // border: Border.all(color: const Color(0xff393939), width: 1),
               ),
-              // Generate bar groups dynamically from the API data
-              barGroups: apiData.map((data) => makeGroupData(data)).toList(),
+              // Use the generated list of bar groups for all 7 days
+              barGroups: allWeeklyGroups,
             ),
           ),
         ),

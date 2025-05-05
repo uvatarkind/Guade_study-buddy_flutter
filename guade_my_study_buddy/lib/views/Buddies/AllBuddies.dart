@@ -3,7 +3,7 @@ import './BuddyDetailScreen.dart';
 
 class AllBuddiesScreen extends StatelessWidget {
   final String searchQuery;
-
+  
   AllBuddiesScreen({required this.searchQuery});
 
   final List<Map<String, String>> buddies = [
@@ -28,7 +28,7 @@ class AllBuddiesScreen extends StatelessWidget {
       "image": "assets/images/buddy4.jpg"
     },
   ];
-
+  
   @override
   Widget build(BuildContext context) {
     final filteredBuddies = buddies.where((buddy) {

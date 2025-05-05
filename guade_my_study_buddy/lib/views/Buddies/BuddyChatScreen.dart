@@ -24,10 +24,16 @@ class _BuddyChatScreenState extends State<BuddyChatScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: AssetImage(widget.buddyImage),
-              radius: 20,
-            ),
+            widget.buddyImage.contains('https')
+                ? CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        widget.buddyImage), // Change AssetImage to NetworkImage
+                    radius: 20,
+                  )
+                : CircleAvatar(
+                    backgroundImage: AssetImage(widget.buddyImage),
+                    radius: 20,
+                  ),
             SizedBox(width: 10),
             Text(widget.buddyName),
           ],

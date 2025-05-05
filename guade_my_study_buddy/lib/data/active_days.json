@@ -1,0 +1,15 @@
+{
+  "hoursSpent": [
+    { "date": "2025-01-15", "hoursSpent": 1.5 },
+    { "date": "2025-01-16", "hoursSpent": 2.0 },
+    { "date": "2025-02-01", "hoursSpent": 0.75 },
+    { "date": "2025-03-10", "hoursSpent": 3.0 },
+    { "date": "2025-03-11", "hoursSpent": 2.5 },
+    { "date": "2025-04-05", "hoursSpent": 1.0 },
+    { "date": "2025-04-06", "hoursSpent": 1.5 },
+    { "date": "2025-05-01", "hoursSpent": 2.0 },
+    { "date": "2025-05-03", "hoursSpent": 3.5 },
+    { "date": "2025-05-04", "hoursSpent": 10.0 },
+    { "date": "2025-05-05", "hoursSpent": 24.0 } 
+  ]
+}
