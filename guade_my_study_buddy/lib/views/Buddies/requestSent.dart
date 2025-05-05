@@ -89,8 +89,8 @@ class RequestSentScreen extends StatelessWidget {
               // Back to Home page button
               TextButton(
                 onPressed: () {
-                  // TODO: Implement navigation to Home page
-                  // Example: Navigator.pushReplacementNamed(context, '/home');
+                  
+                  Navigator.pushReplacementNamed(context, '/home');
                 },
                 child: Text(
                   'Back to Home page',

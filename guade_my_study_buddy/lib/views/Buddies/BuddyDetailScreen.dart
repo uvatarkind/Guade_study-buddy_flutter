@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'AllBuddies.dart';
 import './requestSent.dart';
 
 class BuddyDetailScreen extends StatelessWidget {
@@ -13,7 +13,7 @@ class BuddyDetailScreen extends StatelessWidget {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Image.asset(
-                "assets/group.jpg",
+                "assets/images/buddy1.jpg",
                 fit: BoxFit.cover,
               ),
             ),
