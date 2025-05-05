@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './dynamic_bar_chart.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:fl_chart/fl_chart.dart'; 
+import 'package:fl_chart/fl_chart.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My Progress',
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.deepPurple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Progress(),
@@ -101,19 +101,21 @@ class _ProgressState extends State<Progress> {
                   onPageChanged: (focusedDay) {
                     _focusedDay = focusedDay;
                   },
-                  eventLoader: _getEventsForDay, // Use eventLoader to highlight active days
+                  eventLoader:
+                      _getEventsForDay, // Use eventLoader to highlight active days
                   calendarStyle: CalendarStyle(
                     // Style the active days
                     markerDecoration: const BoxDecoration(
-                      color: Colors.purple, // Color for active days
+                      color: Colors.deepPurpleAccent, // Color for active days
                       shape: BoxShape.circle,
                     ),
                     todayDecoration: BoxDecoration(
-                       color: Colors.purple.withOpacity(0.5), // Style for today
-                       shape: BoxShape.circle,
+                      color:
+                          Colors.deepPurple.withOpacity(0.5), // Style for today
+                      shape: BoxShape.circle,
                     ),
                     selectedDecoration: BoxDecoration(
-                      color: Colors.purpleAccent, // Style for selected day
+                      color: Colors.deepPurple, // Style for selected day
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -154,7 +156,8 @@ class _ProgressState extends State<Progress> {
                         // You might add a border or other styling if needed for the placeholder
                       ),
                       // Optional: Add a temporary icon or text to the placeholder
-                       child: Icon(Icons.local_fire_department, size: 40, color: Colors.purple),
+                      child: Icon(Icons.local_fire_department,
+                          size: 40, color: Colors.deepPurple),
                     ),
                     SizedBox(width: 16), // Space between icon and text
                     Expanded(
@@ -199,9 +202,8 @@ class _ProgressState extends State<Progress> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Expanded(
-                  // height: 200, // Set a height for the graph
-                  child: DynamicBarChart()
-                ),
+                    // height: 200, // Set a height for the graph
+                    child: DynamicBarChart()),
               ),
             ),
           ],
@@ -217,7 +219,7 @@ class _ProgressState extends State<Progress> {
       barRods: [
         BarChartRodData(
           toY: y,
-          color: Colors.purple, // Color of the bars
+          color: Colors.deepPurple, // Color of the bars
           width: 16, // Width of the bars
           borderRadius: BorderRadius.circular(4),
         ),
@@ -276,10 +278,10 @@ class _ProgressState extends State<Progress> {
     String text;
     if (value == 0) {
       text = '0';
-    } else if (value % 1 == 0) { // Show whole numbers on the y-axis
-       text = value.toInt().toString();
-    }
-     else {
+    } else if (value % 1 == 0) {
+      // Show whole numbers on the y-axis
+      text = value.toInt().toString();
+    } else {
       return Container(); // Hide non-integer values
     }
     return Text(text, style: style, textAlign: TextAlign.center);

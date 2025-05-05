@@ -58,16 +58,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             clipper: _AppBarClipper(),
             child: Container(
               height: 150.0, // Adjust height as needed
-              color: Colors.purple.shade100,
+              color: Colors.deepPurple,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 20.0), // Adjust top padding for status bar
+            padding: const EdgeInsets.only(
+                top: 20.0), // Adjust top padding for status bar
             child: AppBar(
               backgroundColor: Colors.transparent, // Make AppBar transparent
               elevation: 0, // Remove shadow
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.black), // Adjust icon color
+                icon: Icon(Icons.arrow_back,
+                    color: Colors.white), // Adjust icon color
                 onPressed: () => Navigator.pop(context),
               ),
               title: Text(
@@ -75,14 +77,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black, // Adjust text color
+                  color: Colors.white, // Adjust text color
                 ),
               ),
               centerTitle: true,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 150.0), // Adjust top padding to start below the app bar
+            padding: const EdgeInsets.only(
+                top: 150.0), // Adjust top padding to start below the app bar
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 20),
               children: [
@@ -127,7 +130,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(title, style: TextStyle(fontSize: 14)),
-      activeColor: const Color.fromARGB(255, 119, 5, 139),
+      activeColor: Colors.deepPurple,
       value: toggles[title] ?? false,
       onChanged: (value) => _updateToggle(title, value),
     );
@@ -138,7 +141,8 @@ class _AppBarClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.lineTo(0, size.height - 30); // Start from the bottom-left and curve upwards
+    path.lineTo(
+        0, size.height - 30); // Start from the bottom-left and curve upwards
     path.quadraticBezierTo(
       size.width / 2,
       size.height,

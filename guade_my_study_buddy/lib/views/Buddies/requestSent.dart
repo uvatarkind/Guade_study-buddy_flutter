@@ -6,7 +6,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Request Sent',
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.deepPurple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: RequestSentScreen(),
@@ -19,7 +19,8 @@ class RequestSentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Make app bar background transparent
+        backgroundColor:
+            Colors.transparent, // Make app bar background transparent
         elevation: 0, // Remove app bar shadow
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black), // Back arrow icon
@@ -44,8 +45,9 @@ class RequestSentScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  color: Colors.purple, // Purple background
-                  shape: BoxShape.circle, // Circular shape, adjust for more complex shape
+                  color: Colors.deepPurple, // Purple background
+                  shape: BoxShape
+                      .circle, // Circular shape, adjust for more complex shape
                   // For the exact shape, consider using a custom painter or SVG/image.
                 ),
                 child: Icon(
@@ -89,14 +91,13 @@ class RequestSentScreen extends StatelessWidget {
               // Back to Home page button
               TextButton(
                 onPressed: () {
-                  
                   Navigator.pushReplacementNamed(context, '/home');
                 },
                 child: Text(
                   'Back to Home page',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.purple, // Purple text color
+                    color: Colors.deepPurple, // Purple text color
                   ),
                 ),
               ),

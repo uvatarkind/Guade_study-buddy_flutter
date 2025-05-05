@@ -191,8 +191,10 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
 
   Widget _buildRequestList() {
     return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       children: [
         _buildRequestTile("Bethel", "Super Nova"),
+        const SizedBox(height: 8),
         _buildRequestTile("Petter", "Nerd"),
       ],
     );
@@ -200,24 +202,86 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
 
   Widget _buildRequestTile(String name, String group) {
     return Card(
-      margin: EdgeInsets.all(8),
-      elevation: 3,
-      child: ListTile(
-        leading: CircleAvatar(child: Icon(Icons.person)),
-        title: Text("$name: wants to join your $group buddy."),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+      margin: EdgeInsets.zero,
+      shadowColor: Colors.deepPurpleAccent,
+      elevation: 7,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed: () {},
-              child: Text("Accept"),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.blue.shade100,
+                  child: Text(
+                    name[0],
+                    style: TextStyle(
+                      color: Colors.blue.shade800,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        "wants to join your $group buddy",
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text("Decline"),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () {},
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                  ),
+                  child: const Text("Decline"),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                  ),
+                  child: const Text("Accept"),
+                ),
+              ],
             ),
           ],
         ),
