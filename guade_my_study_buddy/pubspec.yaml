@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  camera: ^0.11.0 # Check pub.dev for the latest version
+  permission_handler: ^11.3.1 
   flutter_dotenv: ^5.1.0
   image_picker: ^1.0.7
   shared_preferences: ^2.2.2

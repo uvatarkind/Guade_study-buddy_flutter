@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<uses-permission android:name="android.permission.CAMERA" />
+<!-- Optional: Add microphone if you plan to record audio later -->
+<!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
+<!-- Declare camera feature -->
+<uses-feature android:name="android.hardware.camera" android:required="true" />
 <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
