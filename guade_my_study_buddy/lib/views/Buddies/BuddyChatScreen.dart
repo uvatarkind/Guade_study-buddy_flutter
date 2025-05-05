@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../camera_preview.dart';
 
 class BuddyChatScreen extends StatefulWidget {
   final String buddyName;
@@ -33,11 +34,15 @@ class _BuddyChatScreenState extends State<BuddyChatScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.video_call),
+            icon: const Icon(Icons.videocam,
+                color: Colors.blueAccent), // Example icon
+            tooltip: 'Show Camera Preview',
             onPressed: () {
-              // TODO: Implement video call functionality
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Video call feature coming soon!')),
+              // Navigate to the new CameraPreviewScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CameraPreviewScreen()),
               );
             },
           ),
