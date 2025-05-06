@@ -9,6 +9,7 @@ import 'language.dart';
 import 'policy.dart';
 import 'package:image_picker/image_picker.dart';
 import '/services/auth_service.dart';
+import 'dart:developer' as developer;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -21,13 +22,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   UserModel? _user;
   bool _isLoading = true;
   String? _profileImagePath;
+  bool _isUploadingImage = false;
 
   final TextEditingController nameController =
-  TextEditingController(text: "Hanna Hanna");
+      TextEditingController(text: "Hanna Hanna");
   final TextEditingController emailController =
-  TextEditingController(text: "youremail@domain.com");
+      TextEditingController(text: "youremail@domain.com");
   final TextEditingController phoneController =
-  TextEditingController(text: "+01 234 567 89");
+      TextEditingController(text: "+01 234 567 89");
 
   @override
   void initState() {
@@ -36,28 +38,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("auth_token");
+    try {
+      setState(() => _isLoading = true);
+      final userService = ApiService();
+      final user = await userService.fetchUserProfile();
 
-    if (token != null) {
-      final userService = UserService();
-      final user = await userService.fetchUserProfile(token);
-
-      setState(() {
-        _user = user;
-        _isLoading = false;
-      });
+      if (user != null) {
+        setState(() {
+          _user = user;
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load user profile');
+      }
+    } catch (error) {
+      developer.log('Error loading profile: $error');
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load profile: ${error.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   Future<void> _pickImageFromGallery() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
 
-    if (pickedFile != null) {
-      setState(() {
-        _profileImagePath = pickedFile.path;
-      });
+      if (pickedFile != null) {
+        setState(() {
+          _isUploadingImage = true;
+          _profileImagePath = pickedFile.path;
+        });
+
+        // TODO: Implement image upload to server
+        // For now, we'll just update the local state
+        await Future.delayed(const Duration(seconds: 1)); // Simulate upload
+
+        setState(() {
+          _isUploadingImage = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile image updated successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (error) {
+      developer.log('Error picking image: $error');
+      setState(() => _isUploadingImage = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update profile image: ${error.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -77,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               Transform.translate(
-                offset: Offset(0, -80),
+                offset: const Offset(0, -80),
                 child: Column(
                   children: [
                     Stack(
@@ -86,58 +131,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           radius: 50,
                           backgroundColor: Colors.white,
                           backgroundImage: _isLoading
-                              ? AssetImage("assets/images/profile.jpg")
-                              : (_user?.imageUrl != null
-                              ? NetworkImage(_user!.imageUrl!)
-                              : (_profileImagePath != null
-                              ? FileImage(File(_profileImagePath!))
-                              : AssetImage("assets/images/profile.jpg"))
-                          ) as ImageProvider<Object>,
+                              ? const AssetImage("assets/images/profile.jpg")
+                              : (_user?.imageUrl != null &&
+                                          _user!.imageUrl!.isNotEmpty
+                                      ? NetworkImage(_user!.imageUrl!)
+                                      : (_profileImagePath != null
+                                          ? FileImage(File(_profileImagePath!))
+                                          : const AssetImage(
+                                              "assets/images/profile.jpg")))
+                                  as ImageProvider<Object>,
                         ),
-                        if (_isLoading)
+                        if (_isLoading || _isUploadingImage)
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.deepPurple),
+                            ),
                           ),
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: GestureDetector(
-                            onTap: _pickImageFromGallery,
+                            onTap: _isUploadingImage
+                                ? null
+                                : _pickImageFromGallery,
                             child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 Icons.edit,
                                 size: 20,
-                                color: Colors.black54,
+                                color: _isUploadingImage
+                                    ? Colors.grey
+                                    : Colors.black54,
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     _isLoading
-                        ? CircularProgressIndicator()
+                        ? const CircularProgressIndicator()
                         : Text(
-                      _user?.name ?? "Unknown",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                            _user?.name ?? "Yubi",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                     _isLoading
-                        ? CircularProgressIndicator()
+                        ? const CircularProgressIndicator()
                         : Text(
-                      "${_user?.email ?? "Unknown"}",
-                      style: TextStyle(color: Colors.black54),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
-                    ProfileSection(),
-                    SizedBox(height: 80),
+                            _user?.email ?? "Unknown",
+                            style: const TextStyle(color: Colors.black54),
+                            textAlign: TextAlign.center,
+                          ),
+                    const SizedBox(height: 20),
+                    const ProfileSection(),
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),
@@ -161,11 +218,11 @@ class _ProfileSectionState extends State<ProfileSection> {
   bool _isLoggingOut = false;
 
   Widget buildTile(
-      IconData icon,
-      String title, {
-        Widget? trailing,
-        VoidCallback? onTap,
-      }) {
+    IconData icon,
+    String title, {
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -177,12 +234,13 @@ class _ProfileSectionState extends State<ProfileSection> {
   Widget buildToggleText() {
     return DropdownButton<String>(
       value: notificationStatus,
-      items: <String>['ON', 'OFF'].map<DropdownMenuItem<String>>((String value) {
+      items:
+          <String>['ON', 'OFF'].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -195,8 +253,8 @@ class _ProfileSectionState extends State<ProfileSection> {
           });
         }
       },
-      underline: SizedBox(),
-      icon: Icon(Icons.arrow_drop_down),
+      underline: const SizedBox(),
+      icon: const Icon(Icons.arrow_drop_down),
     );
   }
 
@@ -205,20 +263,39 @@ class _ProfileSectionState extends State<ProfileSection> {
 
     setState(() => _isLoggingOut = true);
 
-    final authService = AuthService();
-    bool success = await authService.logout();
+    try {
+      final authService = AuthService();
+      bool success = await authService.logout();
 
-    if (success) {
-      setState(() => _isLoggingOut = false);
-
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/login', (route) => route.isFirst);
-    } else {
-      setState(() => _isLoggingOut = false);
+      if (success) {
+        if (!mounted) return;
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/login',
+          (route) => false,
+        );
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Logout failed! Try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (error) {
+      developer.log('Logout error: $error');
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Logout failed! Try again.'), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text('Logout failed: ${error.toString()}'),
+          backgroundColor: Colors.red,
+        ),
       );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoggingOut = false);
+      }
     }
   }
 
@@ -227,8 +304,9 @@ class _ProfileSectionState extends State<ProfileSection> {
     return Column(
       children: [
         Card(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(
@@ -237,68 +315,76 @@ class _ProfileSectionState extends State<ProfileSection> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EditProfilePage()),
+                    MaterialPageRoute(
+                        builder: (context) => const EditProfilePage()),
                   );
                 },
               ),
-              Divider(),
+              const Divider(),
               buildTile(
                 Icons.notifications_outlined,
                 "Notifications",
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => NotificationsScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen()),
                   );
                 },
                 trailing: buildToggleText(),
               ),
-              Divider(),
+              const Divider(),
               buildTile(
                 Icons.language_outlined,
                 "Language",
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LanguageSettingsScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const LanguageSettingsScreen()),
                   );
                 },
-                trailing: Text("English", style: TextStyle(color: Colors.blue)),
+                trailing:
+                    const Text("English", style: TextStyle(color: Colors.blue)),
               ),
             ],
           ),
         ),
         Card(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(Icons.lock_outline, "Security"),
-              Divider(),
+              const Divider(),
               buildTile(
                 Icons.brightness_6_outlined,
                 "Theme",
-                trailing: Text("Light mode", style: TextStyle(color: Colors.blue)),
+                trailing: const Text("Light mode",
+                    style: TextStyle(color: Colors.blue)),
               ),
             ],
           ),
         ),
         Card(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               buildTile(Icons.help_outline, "Help & Support"),
-              Divider(),
+              const Divider(),
               buildTile(Icons.mail_outline, "Contact us"),
-              Divider(),
+              const Divider(),
               buildTile(
                 Icons.privacy_tip_outlined,
                 "Privacy policy",
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicyScreen()),
                   );
                 },
               ),
@@ -306,10 +392,11 @@ class _ProfileSectionState extends State<ProfileSection> {
           ),
         ),
         Card(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Column(
               children: [
                 ElevatedButton(
@@ -317,15 +404,20 @@ class _ProfileSectionState extends State<ProfileSection> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
-                    minimumSize: Size(double.infinity, 50),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   child: _isLoggingOut
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text("Logout",
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold)),
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Logout",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ],
             ),

@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
-  static String get baseUrl => dotenv.env['API_URL'] ?? 'http://localhost:5000';
+  static String get baseUrl =>
+      'https://guade-study-buddy-node-1.onrender.com/api';
   static const String tokenKey = 'auth_token';
 
   // Get stored token
@@ -88,44 +89,51 @@ class ApiService {
 
 // ! Just for localserver
 class BuddyService {
-  //!!! DON'T FORGET TO ADD THE LOCAL SEVER HERE
-  // !! HOW WOULD YOU HANDLE THE IMAGE THERE IS NO GROUP PROFILE IMAGE PROVIDER
-  final String baseUrl = 'http://localhost:3123'; // TODO: don't forget to run the with the correct port number
-  
+  final String baseUrl = 'https://guade-study-buddy-node-1.onrender.com/api';
 
   // Fetch buddies list
   Future<List<dynamic>> getBuddies() async {
-    final response = await http.get(Uri.parse('$baseUrl/myBuddies'));
-    
+    final headers = await ApiService.getHeaders();
+    final response = await http.get(
+      Uri.parse('$baseUrl/buddies/groups'),
+      headers: headers,
+    );
+
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('Failed to load buddies');
+      throw Exception('Failed to load buddies: ${response.body}');
     }
   }
 
   // Add a new buddy
   Future<void> addBuddy(Map<String, dynamic> newBuddy) async {
+    final headers = await ApiService.getHeaders();
     final response = await http.post(
-      Uri.parse('$baseUrl/myBuddies'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('$baseUrl/buddies/groups'),
+      headers: headers,
       body: json.encode(newBuddy),
     );
 
     if (response.statusCode != 201) {
-      throw Exception('Failed to add buddy');
+      print(response.body);
+      throw Exception('Failed to add buddy: ${response.body}');
     }
   }
 }
 
-
 class HoursService {
   //!!! DON'T FORGET TO ADD THE LOCAL SERVER HERE
-  final String baseUrl = 'http://localhost:3123'; // TODO: don't forget to run with the correct port number
+  final String baseUrl =
+      'https://guade-study-buddy-node-1.onrender.com/api'; // TODO: don't forget to run with the correct port number
 
   // Fetch hours spent list
   Future<List<dynamic>> getHoursSpent() async {
-    final response = await http.get(Uri.parse('$baseUrl/hoursSpent'));
+    final headers = await ApiService.getHeaders();
+    final response = await http.get(
+      Uri.parse('$baseUrl/hoursSpent'),
+      headers: headers,
+    );
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -136,9 +144,10 @@ class HoursService {
 
   // Add new hours spent entry
   Future<void> addHoursSpent(Map<String, dynamic> newEntry) async {
+    final headers = await ApiService.getHeaders();
     final response = await http.post(
       Uri.parse('$baseUrl/hoursSpent'),
-      headers: {'Content-Type': 'application/json'},
+      headers: headers,
       body: json.encode(newEntry),
     );
 

@@ -149,6 +149,16 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 16),
 
               // "Sign Up" and "Forgot Password" Links
+              Row(mainAxisAlignment: MainAxisAlignment.end, 
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/forgotPassword');
+                  },
+                  child: const Text('Forgot password?',
+                      style: TextStyle(color: Colors.yellow, fontSize: 14)),
+                )
+              ]),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -166,13 +176,6 @@ class _LoginPageState extends State<LoginPage> {
                                 TextStyle(color: Colors.white, fontSize: 14)),
                       ),
                     ],
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/forgotPassword');
-                    },
-                    child: const Text('Forgot password?',
-                        style: TextStyle(color: Colors.yellow, fontSize: 14)),
                   ),
                 ],
               ),

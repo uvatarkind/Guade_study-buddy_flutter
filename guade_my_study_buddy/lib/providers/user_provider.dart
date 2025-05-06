@@ -9,6 +9,7 @@ class UserProvider with ChangeNotifier {
       email: '',
       gender: '',
       password: '',
+      imageUrl: '',
       confirmPassword: '',
       levelOfEducation: '',
       major: '',

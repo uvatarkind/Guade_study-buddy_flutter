@@ -3,6 +3,7 @@ import 'package:guade_my_study_buddy/models/my_buddies.dart';
 import 'package:guade_my_study_buddy/services/api_service.dart';
 // import 'package:guade_my_study_buddy/services/api_service.dart'; // Ensure this is correctly imported if used later
 import '../ReusableWiget/tag_input_weidget.dart'; // Ensure this path is correct
+import 'package:shared_preferences/shared_preferences.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -48,98 +49,97 @@ class _CreatebuddyState extends State<Createbuddy> {
   }
 
   void _handleCreate() async {
-    // Trim whitespace from text fields
-    final String name = _nameController.text.trim();
-    final String description = _descriptionController.text.trim();
-    final String imageUrl =
-        _imageUrlController.text.trim(); // Get URL from controller
+    try {
+      // Trim whitespace from text fields
+      final String name = _nameController.text.trim();
+      final String description = _descriptionController.text.trim();
+      final String imageUrl = _imageUrlController.text.trim();
 
-    // Validate inputs
-    if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a group name')),
-      );
-      return;
+      // Validate inputs
+      if (name.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please enter a group name')),
+        );
+        return;
+      }
+      if (description.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please enter a description')),
+        );
+        return;
+      }
+      if (tagList == null || tagList!.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please enter at least one tag')),
+        );
+        return;
+      }
+      if (imageUrl.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please provide an image URL')),
+        );
+        return;
+      }
+
+      setState(() {
+        _isSaving = true;
+      });
+
+      // Get the current user's ID from shared preferences
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getString('userId');
+
+      print('Debug - User ID from preferences: $userId'); // Debug log
+
+      if (userId == null) {
+        throw Exception('User not logged in');
+      }
+
+      // Create new buddy group
+      Map<String, dynamic> newBuddy = {
+        'name': name,
+        'image': imageUrl,
+        'description': description,
+        'subjects': tagList!.join(','),
+        'privacy': _privacyStatus == PrivacyStatus.Private
+            ? 'private'
+            : 'public', // Convert to lowercase enum values
+        'creator': userId,
+      };
+
+      print('Debug - Request data: $newBuddy'); // Debug log
+
+      // Call the API to create the buddy group
+      await BuddyService().addBuddy(newBuddy);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Study group created successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.pop(context); // Return to previous screen
+      }
+    } catch (error) {
+      print('Debug - Error creating buddy: $error'); // Debug log
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create study group: ${error.toString()}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
     }
-    if (description.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a description')),
-      );
-      return;
-    }
-    if (tagList == null || tagList!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter at least one tag')),
-      );
-      return;
-    }
-    // Check if image URL is provided
-    if (imageUrl.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please provide an image URL')),
-      );
-      return;
-    }
-    // creating new Buddy group
-    Map<String, dynamic> newBuddy = {
-      'name': name,
-      'image': imageUrl,
-      'description': description,
-      'subjects': tagList!.join(',')
-    };
-    // posting the new buddy group onto the local_data.json file
-    BuddyService().addBuddy(newBuddy);
-    // Update state with the selected URL for display/use
-    setState(() {
-      _selectedImageUrl = imageUrl;
-      _isSaving = true;
-    });
-
-    // --- Start API Call Logic (Replace with your actual API call) ---
-    // You would typically send name, description, _privacyStatus, tagList, and _selectedImageUrl to your API
-    print('Creating group with:');
-    print('Name: $name');
-    print('Description: $description');
-    print('Privacy: $_privacyStatus');
-    print('Tags: $tagList');
-    print('Image URL: $_selectedImageUrl'); // Use the stored URL here
-
-    // Simulate API call
-    await Future.delayed(Duration(seconds: 2)); // Simulate network delay
-
-    // Assuming API call was successful
-    // final bool success = await ApiService.createBuddyGroup(
-    //   name: name,
-    //   description: description,
-    //   privacy: _privacyStatus.toString().split('.').last, // Convert enum to string
-    //   tags: tagList!,
-    //   imageUrl: _selectedImageUrl,
-    // );
-
-    // if (success) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Study group created successfully!'),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ),
-    );
-    Navigator.pop(context); // Return to previous screen
-    // } else {
-    //    ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Failed to create study group. Please try again.'),
-    //       backgroundColor: Colors.red,
-    //       duration: Duration(seconds: 2),
-    //     ),
-    //   );
-    // }
-
-    // --- End API Call Logic ---
-
-    setState(() {
-      _isSaving = false;
-    });
   }
 
   void _handleCancel() {

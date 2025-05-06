@@ -7,9 +7,7 @@ import 'package:guade_my_study_buddy/models/user_models.dart'; // Import the use
 class ApiService {
   final String _baseUrl =
       'https://guade-study-buddy-node-1.onrender.com/api'; //  base URL
-  final String _profileEndpoint =
-      '/api/profile'; //  profile endpoint
-
+  final String _profileEndpoint = '/profile'; //  profile endpoint
 
   // Get the authentication token from shared preferences
   Future<String?> _getToken() async {
@@ -43,16 +41,15 @@ class ApiService {
 
       if (response.statusCode == 200) {
         developer.log('Response body: ${response.body}');
-        try{
+        try {
           final dynamic data = json.decode(response.body);
-          developer.log('Type of data: ${data.runtimeType}');  // ADD THIS LINE
-          developer.log('Value of data: $data');            // ADD THIS LINE
+          developer.log('Type of data: ${data.runtimeType}'); // ADD THIS LINE
+          developer.log('Value of data: $data'); // ADD THIS LINE
           return UserModel.fromJson(data);
-        }catch(e){
+        } catch (e) {
           developer.log('Error decoding JSON: $e');
           return null;
         }
-
       } else {
         developer.log(
             'Failed to fetch profile. Status code: ${response.statusCode}');

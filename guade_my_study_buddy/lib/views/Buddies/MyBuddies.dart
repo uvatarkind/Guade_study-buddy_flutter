@@ -14,31 +14,10 @@ class MyBuddiesScreen extends StatefulWidget {
 
 class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   String selectedStatus = 'Joined'; // Default status
-  List<Map<String, String>>? buddies = [];
-  /*          // todo: 
-  List<Map<String, String>> buddies = [
-    {
-      "name": "SUPER NOVA",
-      "subjects": "Maths, Physics, Astronomy",
-      "image": "assets/images/buddy1.jpg"
-    },
-    {
-      "name": "NERD HERD",
-      "subjects": "Science, Biology, Chemistry",
-      "image": "assets/images/buddy2.jpg"
-    },
-    {
-      "name": "TECH CREW",
-      "subjects": "CS, AI, Programming",
-      "image": "assets/images/buddy3.jpg"
-    },
-    {
-      "name": "LOGIC LEGENDS",
-      "subjects": "Maths, Logic, Reasoning",
-      "image": "assets/images/buddy4.jpg"
-    },
-  ];
-*/
+  List<Map<String, String>> buddies = [];
+  bool isLoading = true;
+  String? errorMessage;
+
   @override
   void initState() {
     super.initState();
@@ -47,25 +26,33 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
 
   Future<void> fetchBuddies() async {
     try {
+      setState(() {
+        isLoading = true;
+        errorMessage = null;
+      });
+
       List<dynamic> buddiesFromJson = await BuddyService().getBuddies();
 
       setState(() {
-        buddies = buddiesFromJson
-            .map((item) => (item as Map<String, dynamic>).map((key, value) {
-                  if (key == 'subjects' && value is List<String>) {
-                    return MapEntry(
-                        key,
-                        value.join(
-                            ', ')); // Convert list to comma-separated string
-                  }
-                  return MapEntry(key, value.toString());
-                }))
-            .toList();
+        buddies = buddiesFromJson.map((item) {
+          final Map<String, dynamic> buddyMap = item as Map<String, dynamic>;
+          return {
+            'name': buddyMap['name']?.toString() ?? 'Unknown',
+            'subjects': buddyMap['subjects'] is List
+                ? (buddyMap['subjects'] as List).join(', ')
+                : buddyMap['subjects']?.toString() ?? 'No subjects',
+            'image':
+                buddyMap['image']?.toString() ?? 'assets/images/profile.jpg',
+          };
+        }).toList();
+        isLoading = false;
       });
-
-      print('IT WORKS PERFECTLY!!');
     } catch (error) {
-      print('Error fetching data from the local server: $error');
+      setState(() {
+        errorMessage = 'Failed to load buddies: $error';
+        isLoading = false;
+      });
+      print('Error fetching buddies: $error');
     }
   }
 
@@ -100,9 +87,11 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
                       );
                     }).toList(),
                     onChanged: (value) {
-                      setState(() {
-                        selectedStatus = value!;
-                      });
+                      if (value != null) {
+                        setState(() {
+                          selectedStatus = value;
+                        });
+                      }
                     },
                   ),
                 ),
@@ -112,7 +101,15 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
         ),
 
         // Status-based content
-        Expanded(child: _buildContentBasedOnStatus(selectedStatus)),
+        Expanded(
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : errorMessage != null
+                  ? Center(
+                      child: Text(errorMessage!,
+                          style: TextStyle(color: Colors.red)))
+                  : _buildContentBasedOnStatus(selectedStatus),
+        ),
 
         // Create Buddy button (only for Joined or Pending)
         if (selectedStatus == 'Joined' || selectedStatus == 'Pending')
@@ -121,16 +118,12 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
             child: Center(
               child: ElevatedButton.icon(
                 onPressed: () async {
-                  // Make the callback async to reRender each time a new buddy is created
-
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Createbuddy()),
                   );
                   if (mounted) {
-                    setState(() {
-                      print('Returned from Createbuddy, Parent refreshing...');
-                    });
+                    fetchBuddies(); // Refresh the list after creating a new buddy
                   }
                 },
                 icon: Icon(Icons.group_add),
@@ -164,7 +157,6 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   Widget _buildContentBasedOnStatus(String status) {
     switch (status) {
       case 'Joined':
-        return _buildGroupGrid();
       case 'Pending':
         return _buildGroupGrid();
       case 'Request':
@@ -175,13 +167,22 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
   }
 
   Widget _buildGroupGrid() {
-    final filtered = buddies != null
-        ? buddies!.where((buddy) {
-            final query = widget.searchQuery.toLowerCase();
-            return buddy['name']!.toLowerCase().contains(query) ||
-                buddy['subjects']!.toLowerCase().contains(query);
-          }).toList()
-        : [];
+    final filtered = buddies.where((buddy) {
+      final query = widget.searchQuery.toLowerCase();
+      final name = buddy['name']?.toLowerCase() ?? '';
+      final subjects = buddy['subjects']?.toLowerCase() ?? '';
+      return name.contains(query) || subjects.contains(query);
+    }).toList();
+
+    if (filtered.isEmpty) {
+      return Center(
+        child: Text(
+          'No buddies found',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
     return GridView.count(
       crossAxisCount: 2,
       mainAxisSpacing: 4,
@@ -194,8 +195,8 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => BuddyChatScreen(
-                  buddyName: buddy['name']!,
-                  buddyImage: buddy['image']!,
+                  buddyName: buddy['name'] ?? 'Unknown',
+                  buddyImage: buddy['image'] ?? 'assets/images/profile.jpg',
                 ),
               ),
             );
@@ -205,27 +206,38 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
             elevation: 4,
             child: Column(
               children: [
-                buddy['image'].toString().contains('https')
-                    ? Expanded(
-                        child: Image.network(
-                          buddy['image']!, // Replace with your image URL
-                          fit: BoxFit
-                              .cover, // Adjust how the image fits inside the container
-                        ),
-                      )
-                    : Expanded(
-                        child: Image.asset(buddy['image']!, fit: BoxFit.cover),
-                      ),
+                if (buddy['image']?.startsWith('http') ?? false)
+                  Expanded(
+                    child: Image.network(
+                      buddy['image']!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/profile.jpg',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: Image.asset(
+                      buddy['image'] ?? 'assets/images/profile.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    buddy['name']!,
+                    buddy['name'] ?? 'Unknown',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
                   ),
                 ),
                 Text(
-                  buddy['subjects']!,
+                  buddy['subjects'] ?? 'No subjects',
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(height: 4),
@@ -250,86 +262,26 @@ class _MyBuddiesScreenState extends State<MyBuddiesScreen> {
 
   Widget _buildRequestTile(String name, String group) {
     return Card(
-      margin: EdgeInsets.zero,
-      shadowColor: Colors.deepPurpleAccent,
-      elevation: 7,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Text(name[0]),
+        ),
+        title: Text(name),
+        subtitle: Text(group),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.blue.shade100,
-                  child: Text(
-                    name[0],
-                    style: TextStyle(
-                      color: Colors.blue.shade800,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        "wants to join your $group buddy",
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            IconButton(
+              icon: Icon(Icons.check, color: Colors.green),
+              onPressed: () {
+                // Handle accept
+              },
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                  ),
-                  child: const Text("Decline"),
-                ),
-                const SizedBox(width: 12),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                  ),
-                  child: const Text("Accept"),
-                ),
-              ],
+            IconButton(
+              icon: Icon(Icons.close, color: Colors.red),
+              onPressed: () {
+                // Handle reject
+              },
             ),
           ],
         ),

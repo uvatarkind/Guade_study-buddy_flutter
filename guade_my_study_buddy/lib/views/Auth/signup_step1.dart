@@ -304,6 +304,7 @@ class _SignUpStep1State extends State<SignUpStep1> {
         username: _usernameController.text.trim(),
         email: _emailController.text.trim(),
         gender: '', // **Gender remains only for UI, not backend**
+        imageUrl: '',
         password: _passwordController.text.trim(),
         confirmPassword: _confirmPasswordController.text.trim(),
         levelOfEducation: '', // Removed from backend
